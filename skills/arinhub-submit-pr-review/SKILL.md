@@ -1,6 +1,6 @@
 ---
 name: arinhub-submit-pr-review
-description: 'Submit pull request (PR) review from chat session to PR conversations. Use when asked to "submit PR review", "submit review to PR #123", or "review pull request". Identifies issues in the current chat session, creates line-specific review comments, avoids duplication with existing comments, and submits the review via GitHub CLI.'
+description: 'Submit pull request (PR) review from chat session to PR conversations. Use when asked to "submit PR review" or "submit review to PR #123". Identifies issues in the current chat session, creates line-specific review comments, avoids duplication with existing comments, and submits the review via GitHub CLI.'
 argument-hint: "PR number or URL (e.g., 123, #456, https://github.com/owner/repo/pull/789)"
 ---
 
@@ -49,7 +49,10 @@ gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/reviews --paginate --jq '.[] | {id,
 
 ### 4. Get Issue List
 
-Get a list of issues identified during the code review in the current chat session.
+Get a list of issues from one of these sources (in priority order):
+
+1. **Log file**: If a log file path is provided (e.g., from `arinhub-review-pr` orchestrator), read the file and extract all issues from the `## Issues` section.
+2. **Current chat session**: If no log file is specified, collect issues identified during the code review in the current chat session.
 
 For each issue found, record:
 
@@ -76,7 +79,7 @@ For each issue identified in Step 4, compare against existing comments from Step
 
 Use the GitHub API to submit a review with inline comments:
 
-```bash
+````bash
 gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/reviews \
   --method POST \
   --input - <<'EOF'
@@ -93,11 +96,11 @@ gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/reviews \
   ]
 }
 EOF
-```
+````
 
 For **multi-line** suggestions, add `start_line` and `start_side`:
 
-```json
+````json
 {
   "path": "<file-path>",
   "start_line": <first-line>,
@@ -106,7 +109,7 @@ For **multi-line** suggestions, add `start_line` and `start_side`:
   "side": "RIGHT",
   "body": "<comment-text>\n\n```suggestion\n<replacement-code>\n```"
 }
-```
+````
 
 If a comment has **no suggestion** (pure observation), omit the ` ```suggestion ``` ` block from the body and the `side` field.
 
@@ -136,6 +139,32 @@ After submission, confirm to the user:
 - Brief list of issues flagged
 
 If no review was submitted (Step 6), explain that no new issues were found beyond existing review comments.
+
+### 9. Extract PR Coverage
+
+Look for a PR Coverage section in the same source used in Step 4:
+
+1. **Log file**: If a log file was used, look for a `## PR Coverage` or `## Coverage` section and extract its full content.
+2. **Current chat session**: If no log file was used, look for any PR Coverage report or coverage summary produced during the current chat session.
+
+If no PR Coverage is found, skip to the end -- this step is optional.
+
+### 10. Post PR Coverage Comment
+
+**This step runs only if PR Coverage was found in Step 9. It must be the very last action -- execute it after all other steps (including the review submission and result report) are complete.**
+
+Post the coverage report as a standalone PR comment:
+
+```bash
+gh pr comment $PR_NUMBER --body "$(cat <<'EOF'
+<coverage-content>
+EOF
+)"
+```
+
+- Use the PR Coverage content exactly as found -- do not modify, summarize, or reformat it
+- This comment is independent of the review; post it even if no review was submitted in Step 6
+- This must be the very last API call in the entire procedure to ensure the coverage comment appears at the bottom of the PR conversation
 
 ## Important Notes
 
