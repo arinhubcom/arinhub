@@ -79,6 +79,16 @@ For each issue identified in Step 4, compare against existing comments from Step
 
 Use the GitHub API to submit a review with inline comments:
 
+Preflight validation checklist (run before submission):
+
+- Validate JSON payload before sending (e.g., `jq . review.json >/dev/null`)
+- Ensure each comment has valid `path`, `line`, and `side: "RIGHT"`
+- For multi-line comments, include `start_line` and `start_side: "RIGHT"` together with `line`
+- Confirm `line` (and `start_line` for ranges) is inside the PR diff hunk for that file
+- If a suggestion is included, append it in `body` using ` ```suggestion ` fences (do not pre-wrap suggestion content in fences earlier)
+- Ensure suggestion replacement code preserves indentation and exact intended final content
+- Use an empty suggestion block (` ```suggestion\n``` `) only when the intent is to delete selected lines
+
 ````bash
 gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/reviews \
   --method POST \
