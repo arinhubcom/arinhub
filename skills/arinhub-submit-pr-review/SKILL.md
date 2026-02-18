@@ -127,7 +127,6 @@ Rules for the review body:
 
 - Write exactly 2 sentences summarizing what was reviewed and key observations
 - If no critical issues are found, start with `LGTM` and use `APPROVE` as the event type
-- If critical issues are found, start with a brief statement of the main concern and use `COMMENT` as the event type
 - Do not use emojis anywhere in the body or comments
 
 Rules for individual comments:
@@ -139,6 +138,7 @@ Rules for individual comments:
 - Do not use emojis in any comment text
 - Each comment `line` must fall within a diff hunk for the given `path`
 - `side` must be `"RIGHT"` (the new version of the file) for comments with suggestions
+- If an issue is critical, use emoji prefix ⚠️ in the comment body to indicate severity, but do not use emojis in the overall review body
 
 ### 8. Report Result
 
