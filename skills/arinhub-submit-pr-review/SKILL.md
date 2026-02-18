@@ -111,7 +111,7 @@ For **multi-line** suggestions, add `start_line` and `start_side`:
 }
 ````
 
-If a comment has **no suggestion** (pure observation), omit the ` ```suggestion ``` ` block from the body and the `side` field.
+If a comment has **no suggestion** (pure observation), omit the ` ```suggestion ``` ` block from the body. Still include `"side": "RIGHT"` so that all comments are anchored to the new version of the file.
 
 Rules for the review body:
 
