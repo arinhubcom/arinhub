@@ -1,12 +1,12 @@
 ---
 name: arinhub-submit-code-review
-description: 'Submit code review from chat session to a PR or display it locally. Use when asked to "submit PR review", "submit review to PR #123", "submit code review", or "show code review". For remote PRs, creates line-specific review comments. For local changes, outputs findings to the terminal.'
+description: 'Submit code review from chat session or log file to a PR or display it locally. Use when asked to "submit PR review", "submit review to PR #123", "submit code review", or "show code review". For remote PRs, creates line-specific review comments. For local changes, outputs findings to the terminal.'
 argument-hint: "PR number or URL (e.g., 123, #456, https://github.com/owner/repo/pull/789), or omit for local changes"
 ---
 
 # Submit Code Review
 
-Submit a structured code review with line-specific comments to a GitHub pull request, or display findings locally when no PR is targeted. Identifies issues in the current chat session, checks for duplicate comments (remote only), and submits the review or outputs it.
+Submit a structured code review with line-specific comments to a GitHub pull request, or display findings locally when no PR is targeted. Identifies issues in the current chat session or log file, checks for duplicate comments (remote only), and submits the review or outputs it.
 
 ## Input
 
