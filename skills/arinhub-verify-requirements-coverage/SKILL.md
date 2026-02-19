@@ -1,6 +1,6 @@
 ---
 name: arinhub-verify-requirements-coverage
-description: 'Verify that a pull request or local changes fully implement the requirements described in a linked GitHub issue. Use when asked to "verify PR implementation", "check PR coverage", "does PR implement the issue", "verify PR against issue", "is PR complete", "PR completeness check", "verify my changes", or "do my changes cover the issue". Analyzes the diff against issue requirements and reports either missing items or confirms 100% coverage.'
+description: 'Verify that a pull request or local changes fully implement the requirements described in a linked GitHub issue. Use when asked to "verify PR coverage", "check PR coverage", "does PR implement the issue", "verify PR against issue", "is PR complete", "check local changes", "verify my changes", or "do my changes cover the issue". Analyzes the diff against issue requirements and reports either missing items or confirms 100% coverage.'
 argument-hint: "PR number or URL (e.g., 123, #456, https://github.com/owner/repo/pull/789), or issue number for local changes (e.g., issue #42)"
 ---
 

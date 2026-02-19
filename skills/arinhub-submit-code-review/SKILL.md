@@ -1,6 +1,6 @@
 ---
 name: arinhub-submit-code-review
-description: 'Submit code review from chat session to a PR or display it locally. Use when asked to "submit PR review", "submit review to PR #123", "submit review", or "show review". For remote PRs, creates line-specific review comments. For local changes, outputs findings to the terminal.'
+description: 'Submit code review from chat session to a PR or display it locally. Use when asked to "submit PR review", "submit review to PR #123", "submit code review", or "show code review". For remote PRs, creates line-specific review comments. For local changes, outputs findings to the terminal.'
 argument-hint: "PR number or URL (e.g., 123, #456, https://github.com/owner/repo/pull/789), or omit for local changes"
 ---
 
