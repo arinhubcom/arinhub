@@ -50,6 +50,7 @@ gh pr diff ${PR_NUMBER} --name-only
 ```
 
 Set `HAS_REACT=true` if **any** of these conditions are met:
+
 - Changed files include `.tsx` or `.jsx` extensions
 - Changed files contain `import ... from 'react'` or `import ... from "react"` patterns
 
@@ -66,9 +67,13 @@ Spawn subagents **in parallel** (do not wait for one to finish before starting t
 
 Spawn a subagent to review PR `${PR_NUMBER}` using the `code-reviewer` skill. Instruct it to return only the list of issues found — no review submission.
 
-#### Subagent B: octocode-research
+#### Subagent B: octocode-roast
 
-Spawn a subagent to review PR `${PR_NUMBER}` using the `octocode-research` skill with the `reviewPR` prompt. Instruct it to return only the list of issues found — no review submission.
+Spawn a subagent that first checks out the PR branch locally, then performs a review using the `octocode-roast` skill:
+
+1. Run `gh pr checkout ${PR_NUMBER}` to switch to the PR branch.
+2. Invoke the `octocode-roast` skill with the prompt `review PR`.
+3. Instruct it to return only the list of issues found — no review submission.
 
 #### Subagent C: pr-review-toolkit
 
@@ -86,7 +91,7 @@ Collect issues from all subagents (three or four, depending on `HAS_REACT`) and 
 2. For each issue, create a fingerprint from: `file path` + `line number range` + `concern category`.
 3. Two issues are duplicates if they share the same file, overlapping line ranges (within ±5 lines), and address the same concern (use semantic comparison, not exact string matching).
 4. When duplicates are found, keep the most detailed/actionable version.
-5. Tag each kept issue with its source(s): `[code-reviewer]`, `[octocode]`, `[pr-review-toolkit]`, `[react-doctor]`, or combination if multiple agents found it.
+5. Tag each kept issue with its source(s): `[code-reviewer]`, `[octocode-roast]`, `[pr-review-toolkit]`, `[react-doctor]`, or combination if multiple agents found it.
 
 ### 6. Write Issues to Log File
 
@@ -113,7 +118,7 @@ Append deduplicated issues to the log file, grouped by severity:
 
   ```ts
   // the problematic code from the PR diff
-  items.forEach(item => {
+  items.forEach((item) => {
     process(item);
   });
   ```
@@ -137,7 +142,7 @@ Append deduplicated issues to the log file, grouped by severity:
 ---
 
 **Total issues:** N (X critical, Y improvements, Z nitpicks)
-**Sources:** code-reviewer, octocode, pr-review-toolkit[, react-doctor] (include react-doctor only if HAS_REACT=true)
+**Sources:** code-reviewer, octocode-roast, pr-review-toolkit[, react-doctor] (include react-doctor only if HAS_REACT=true)
 ````
 
 ### 7. React Health Report (only if `HAS_REACT=true`)
