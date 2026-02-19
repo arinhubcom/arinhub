@@ -135,11 +135,12 @@ Rules for individual comments:
 - Explain the "why" not just the "what"
 - **Prefer suggested changes** over plain comments whenever a concrete fix can be proposed -- use the ` ```suggestion ``` ` block format
 - The explanation text goes **before** the suggestion block in the `body`
-- Do not use emojis in any comment text
 - Each comment `line` must fall within a diff hunk for the given `path`
 - `side` must be `"RIGHT"` (the new version of the file) for comments with suggestions
-- If an issue is critical, use one emoji prefix 🚨 in the comment body
-- If an issue is improvement (not critical), use one emoji prefix ✨ in the comment body
+- If an issue is critical, use emoji prefix 🚨 in title of the comment body
+- If an issue is improvement (not critical), use emoji prefix ✨ in title of the comment body
+- If an issue is a nitpick (minor style or non-functional), use emoji prefix 📝 in title of the comment body
+- Do not use emojis in the main review body -- only in individual comment titles
 
 ### 8. Report Result
 
