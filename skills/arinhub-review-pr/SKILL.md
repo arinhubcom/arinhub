@@ -43,9 +43,9 @@ Create the log file with a header:
 
 ### 3. Launch Parallel Review Subagents
 
-Spawn **three subagents in parallel**. Each agent performs an independent code review and returns a structured list of issues.
+Spawn **four subagents in parallel**. Each agent performs an independent code review and returns a structured list of issues.
 
-Spawn all three subagents **in parallel** (do not wait for one to finish before starting the next). Each subagent must return ONLY a structured list of issues using the format from the Issue Format Reference section below. No subagent may submit a review — they only return findings.
+Spawn all four subagents **in parallel** (do not wait for one to finish before starting the next). Each subagent must return ONLY a structured list of issues using the format from the Issue Format Reference section below. No subagent may submit a review — they only return findings.
 
 #### Subagent A: code-reviewer
 
@@ -59,15 +59,19 @@ Spawn a subagent to review PR `${PR_NUMBER}` using the `octocode-research` skill
 
 Spawn a subagent to review PR `${PR_NUMBER}` using the `pr-review-toolkit:review-pr` command with `all parallel` mode. Instruct it to return only the list of issues found — no review submission.
 
+#### Subagent D: react-doctor
+
+Spawn a subagent to review PR `${PR_NUMBER}` using the `react-doctor` skill. Instruct it to diagnose React-specific issues (performance, hooks misuse, component anti-patterns, security) in the changed files and return only the list of issues found — no review submission.
+
 ### 4. Merge and Deduplicate Issues
 
-Collect issues from all three subagents and deduplicate:
+Collect issues from all four subagents and deduplicate:
 
 1. Parse each subagent's response into individual issues.
 2. For each issue, create a fingerprint from: `file path` + `line number range` + `concern category`.
 3. Two issues are duplicates if they share the same file, overlapping line ranges (within ±5 lines), and address the same concern (use semantic comparison, not exact string matching).
 4. When duplicates are found, keep the most detailed/actionable version.
-5. Tag each kept issue with its source(s): `[code-reviewer]`, `[octocode]`, `[pr-review-toolkit]`, or combination if multiple agents found it.
+5. Tag each kept issue with its source(s): `[code-reviewer]`, `[octocode]`, `[pr-review-toolkit]`, `[react-doctor]`, or combination if multiple agents found it.
 
 ### 5. Write Issues to Log File
 
@@ -90,10 +94,22 @@ Append deduplicated issues to the log file, grouped by severity:
 ---
 
 **Total issues:** N (X critical, Y improvements, Z nitpicks)
-**Sources:** code-reviewer, octocode, pr-review-toolkit
+**Sources:** code-reviewer, octocode, pr-review-toolkit, react-doctor
 ```
 
-### 6. Verify PR Implementation Coverage
+### 6. React Health Report
+
+Append the full output from the `react-doctor` subagent (Subagent D) to the log file under a dedicated section:
+
+```markdown
+## React Health
+
+<full react-doctor report>
+```
+
+This section captures React-specific diagnostics (performance, hooks, component patterns, security) separately from the general deduplicated issues above.
+
+### 7. Verify PR Implementation Coverage
 
 After writing issues, spawn a subagent to verify PR `${PR_NUMBER}` using the `arinhub-verify-pr-implementation` skill. The subagent must return the full PR Coverage report in markdown format.
 
@@ -105,11 +121,11 @@ Append the returned coverage report to the end of the log file under a new secti
 <coverage report content from arinhub-verify-pr-implementation>
 ```
 
-### 7. Submit PR Review
+### 8. Submit PR Review
 
 Spawn a subagent to submit the review for PR `${PR_NUMBER}` using the `arinhub-submit-pr-review` skill. Pass the log file path (`${LOG_FILE}`) so the subagent reads issues from it. The subagent must follow the `arinhub-submit-pr-review` procedure for deduplication against existing PR comments before submission.
 
-### 8. Report to User
+### 9. Report to User
 
 Present a summary:
 
@@ -133,7 +149,7 @@ Each issue in a subagent response must follow this structure:
 
 ## Important Notes
 
-- All three review subagents run in parallel to minimize total review time.
+- All four review subagents run in parallel to minimize total review time.
 - The log file is the single source of truth — all findings are merged there before submission.
 - Deduplication uses semantic comparison: if two agents flag the same concern on the same code, only one entry is kept.
 - The log file persists at `~/.agents/logs/` for future reference and audit.
