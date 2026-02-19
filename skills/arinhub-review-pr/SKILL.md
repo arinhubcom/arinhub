@@ -77,25 +77,53 @@ Collect issues from all four subagents and deduplicate:
 
 Append deduplicated issues to the log file, grouped by severity:
 
-```markdown
+````markdown
 ### Critical
 
 - **[source]** `path/to/file.ts:42` — Description of the issue.
-  > Suggested fix: ...
+
+  ```ts
+  // the problematic code from the PR diff
+  const result = unsafeOperation(input);
+  ```
+
+  ```diff
+  - const result = unsafeOperation(input);
+  + const result = safeOperation(sanitize(input));
+  ```
 
 ### Improvements
 
 - **[source]** `path/to/file.ts:88-95` — Description of the issue.
 
+  ```ts
+  // the problematic code from the PR diff
+  items.forEach(item => {
+    process(item);
+  });
+  ```
+
+  ```diff
+  - items.forEach(item => {
+  -   process(item);
+  - });
+  + await Promise.all(items.map(item => process(item)));
+  ```
+
 ### Nitpicks
 
 - **[source]** `path/to/file.ts:12` — Description of the issue.
+
+  ```ts
+  // the relevant code snippet
+  let x = getValue();
+  ```
 
 ---
 
 **Total issues:** N (X critical, Y improvements, Z nitpicks)
 **Sources:** code-reviewer, octocode, pr-review-toolkit, react-doctor
-```
+````
 
 ### 6. React Health Report
 
@@ -139,13 +167,22 @@ Present a summary:
 
 Each issue in a subagent response must follow this structure:
 
-```markdown
+````markdown
 - **Severity:** critical | improvement | nitpick
   **File:** path/to/file.ts
   **Line(s):** 42 (or 42-50)
   **Description:** Clear explanation of the problem.
-  **Suggestion:** Optional concrete fix.
-```
+  **Code:**
+  ```ts
+  // the problematic code from the PR diff
+  const result = unsafeOperation(input);
+  ```
+  **Suggestion:**
+  ```diff
+  - const result = unsafeOperation(input);
+  + const result = safeOperation(sanitize(input));
+  ```
+````
 
 ## Important Notes
 
