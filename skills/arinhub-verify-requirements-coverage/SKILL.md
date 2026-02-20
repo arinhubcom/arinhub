@@ -16,6 +16,7 @@ Verify that a pull request or local changes fully implement the requirements des
   - Full URL: `https://github.com/owner/repo/pull/123`
   - If omitted, verifies local changes instead.
 - **Issue number** (optional, local mode): When verifying local changes, an issue number can be provided to check coverage against (e.g., `issue #42`).
+- **Diff file path** (optional): Path to a pre-existing diff file (e.g., passed by `arinhub-code-reviewer`). If provided, skip fetching the diff in Step 7 and read this file instead.
 
 ## Procedure
 
@@ -54,11 +55,10 @@ gh pr view $PR_NUMBER --json number,title,body,baseRefName,headRefName,files,url
 
 **If `MODE=local`:**
 
-Gather local change details:
+Gather local change details (staged and unstaged combined):
 
 ```bash
 git diff --name-only HEAD
-git diff --cached --name-only
 ```
 
 ### 4. Extract Linked Issue Number
@@ -144,6 +144,8 @@ R2: <requirement description>
 If the issue body is vague or contains no clear requirements, use the issue title and any available context to infer the expected behavior. Flag inferred requirements clearly.
 
 ### 7. Fetch Diff
+
+**If a diff file path was provided as input**, read the diff from that file instead of fetching it. Skip the commands below and proceed to Step 8.
 
 **If `MODE=remote`:**
 

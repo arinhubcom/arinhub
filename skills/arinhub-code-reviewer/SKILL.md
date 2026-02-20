@@ -33,11 +33,11 @@ REVIEW_FILE=~/.agents/arinhub/code-reviews/pr-code-review-${REPO_NAME}-${PR_NUMB
 
 **If `MODE=local`:**
 
-Determine the repository name from git remote. Use the current branch name for identification.
+Determine the repository name from git remote. Use the current branch name for identification, sanitizing slashes to dashes so file paths remain valid.
 
 ```
 REPO_NAME=<repository name>
-BRANCH_NAME=$(git branch --show-current)
+BRANCH_NAME=$(git branch --show-current | tr '/' '-')
 REVIEW_FILE=~/.agents/arinhub/code-reviews/local-code-review-${REPO_NAME}-${BRANCH_NAME}.md
 ```
 
@@ -93,7 +93,7 @@ gh pr checkout ${PR_NUMBER}
 
 ```bash
 DIFF_FILE=~/.agents/arinhub/diffs/local-diff-${REPO_NAME}-${BRANCH_NAME}.md
-git diff HEAD > ${DIFF_FILE}
+git diff HEAD > "${DIFF_FILE}"
 ```
 
 No checkout is needed in local mode — the working tree already contains the changes.
@@ -147,7 +147,7 @@ Instruct it to return only the list of issues found — no review submission.
 
 #### Subagent D: react-doctor (only if `HAS_REACT=true`)
 
-Spawn a subagent to run `react-doctor` on the working tree. The tool runs via `npx -y react-doctor@latest . --verbose --diff` and requires the working tree to be on the correct branch (already ensured by Step 5).
+Spawn a subagent to run `react-doctor` on the working tree. The tool runs via `npx -y react-doctor@latest . --verbose --diff` and requires the working tree to be on the correct branch (already ensured by Step 4).
 
 **If `MODE=remote`:** Inform the subagent that the PR branch is already checked out. Instruct it to review the React code in the current working tree with diff context from `${DIFF_FILE}`.
 **If `MODE=local`:** Inform the subagent that the working tree already contains the local changes. Instruct it to review the React code in the current working tree with diff context from `${DIFF_FILE}`.
@@ -302,5 +302,5 @@ Each issue in a subagent response must follow this structure:
 - Deduplication uses semantic comparison: if two agents flag the same concern on the same code, only one entry is kept.
 - The review file persists at `~/.agents/arinhub/code-reviews/` for future reference and audit.
 - If a subagent fails or times out, proceed with results from the remaining agents and note the failure in the review file.
-- The diff file persists at `~/.agents/arinhub/diffs/` and is shared read-only across all subagents. The PR branch checkout happens once in Step 5 before subagents launch — no subagent should run `gh pr checkout` or switch branches on its own.
+- The diff file persists at `~/.agents/arinhub/diffs/` and is shared read-only across all subagents. The PR branch checkout happens once in Step 4 before subagents launch — no subagent should run `gh pr checkout` or switch branches on its own.
 - In `MODE=local`, step 11 (Submit PR Review) is skipped — the review is output only to the review file and presented to the user. Step 10 (Verify Requirements Coverage) runs if a linked issue can be determined from the branch name or user input.
