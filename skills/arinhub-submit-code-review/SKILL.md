@@ -78,7 +78,7 @@ For each issue identified in Step 4, compare against existing comments from Step
 
 ### 7. Submit the Review
 
-Use the GitHub API to submit a review with inline comments:
+Submit a single review via the GitHub API. The review consists of **one main comment** (`body`) with **individual inline comments** (`comments`) that appear as conversation threads anchored to specific lines in the diff.
 
 Preflight validation checklist (run before submission):
 
@@ -96,13 +96,13 @@ gh api repos/{owner}/{repo}/pulls/$PR_NUMBER/reviews \
   --input - <<'EOF'
 {
   "event": "APPROVE or COMMENT",
-  "body": "<two-sentence-summary>",
+  "body": "<main-review-comment>",
   "comments": [
     {
       "path": "<file-path>",
       "line": <line-number>,
       "side": "RIGHT",
-      "body": "<comment-text>\n\n```suggestion\n<replacement-code>\n```"
+      "body": "<thread-comment>\n\n```suggestion\n<replacement-code>\n```"
     }
   ]
 }
@@ -118,30 +118,15 @@ For **multi-line** suggestions, add `start_line` and `start_side`:
   "line": <last-line>,
   "start_side": "RIGHT",
   "side": "RIGHT",
-  "body": "<comment-text>\n\n```suggestion\n<replacement-code>\n```"
+  "body": "<thread-comment>\n\n```suggestion\n<replacement-code>\n```"
 }
 ````
 
 If a comment has **no suggestion** (pure observation), omit the ` ```suggestion ``` ` block from the body. Still include `"side": "RIGHT"` so that all comments are anchored to the new version of the file.
 
-Rules for the review body:
+**Main review comment** (`body`): See [main-review-comment.md](references/main-review-comment.md) for the full template and examples.
 
-- Write exactly 2 sentences summarizing what was reviewed and key observations
-- If no critical issues are found, start with `LGTM` and use `APPROVE` as the event type
-- Do not use emojis in the review body summary
-
-Rules for individual comments:
-
-- Keep each comment concise and actionable
-- Explain the "why" not just the "what"
-- **Prefer suggested changes** over plain comments whenever a concrete fix can be proposed -- use the ` ```suggestion ``` ` block format
-- The explanation text goes **before** the suggestion block in the `body`
-- Each comment `line` must fall within a diff hunk for the given `path`
-- `side` must be `"RIGHT"` (the new version of the file) for comments with suggestions
-- If an issue is critical, use emoji prefix 🚨 in title of the comment body
-- If an issue is improvement (not critical), use emoji prefix ✨ in title of the comment body
-- If an issue is a nitpick (minor style or non-functional), use emoji prefix 📝 in title of the comment body
-- Do not use emojis in the main review body -- only in individual comment titles
+**Thread comments** (`comments[].body`): See [thread-comment.md](references/thread-comment.md) for the full template and examples.
 
 ### 8. Report Result
 
@@ -181,7 +166,7 @@ EOF
 
 ## Important Notes
 
-- Use `APPROVE` when no critical issues are found, otherwise use `COMMENT`. Never use `REQUEST_CHANGES` unless the user explicitly asks
+- Use `APPROVE` when no High Priority issues are found, otherwise use `COMMENT`. Never use `REQUEST_CHANGES` unless the user explicitly asks
 - The `line` field in review comments must reference a line that appears in the diff -- comments on unchanged lines will be rejected by the API
 - For multi-line suggestions, use `start_line` and `line` together to define the range being replaced; both must be within the diff hunk
 - An empty suggestion block (` ```suggestion\n``` `) means "delete these lines"

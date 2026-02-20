@@ -176,7 +176,7 @@ Collect issues from all subagents (three or four, depending on `HAS_REACT`) and 
 Append deduplicated issues to the review file, grouped by severity:
 
 ````markdown
-### Critical
+### High Priority
 
 - **[source]** `path/to/file.ts:42` — Description of the issue.
 
@@ -190,7 +190,7 @@ Append deduplicated issues to the review file, grouped by severity:
   + const result = safeOperation(sanitize(input));
   ```
 
-### Improvements
+### Medium Priority
 
 - **[source]** `path/to/file.ts:88-95` — Description of the issue.
 
@@ -208,7 +208,7 @@ Append deduplicated issues to the review file, grouped by severity:
   + await Promise.all(items.map(item => process(item)));
   ```
 
-### Nitpicks
+### Low Priority
 
 - **[source]** `path/to/file.ts:12` — Description of the issue.
 
@@ -219,7 +219,7 @@ Append deduplicated issues to the review file, grouped by severity:
 
 ---
 
-**Total issues:** N (X critical, Y improvements, Z nitpicks)
+**Total issues:** N (X High Priority, Y Medium Priority, Z Low Priority)
 **Sources:** code-reviewer, octocode-roast, pr-review-toolkit[, react-doctor] (include react-doctor only if HAS_REACT=true)
 ````
 
@@ -298,7 +298,7 @@ Present the review file (`${REVIEW_FILE}`) content to the user and a summary:
 Each issue in a subagent response must follow this structure:
 
 ````markdown
-- **Severity:** critical | improvement | nitpick
+- **Severity:** High Priority | Medium Priority | Low Priority
   **File:** path/to/file.ts
   **Line(s):** 42 (or 42-50)
   **Description:** Clear explanation of the problem.
