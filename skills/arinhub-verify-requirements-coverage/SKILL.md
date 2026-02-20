@@ -1,6 +1,6 @@
 ---
 name: arinhub-verify-requirements-coverage
-description: 'Verify that a pull request or local changes fully implement the requirements described in a linked GitHub issue. Use when asked to "verify PR 123", "verify my changes", "check PR #123 coverage", "verify PR #123 against issue #42", "check local changes", or "do my changes cover issue 42". Analyzes the diff against issue requirements and reports either missing items or confirms 100% coverage.'
+description: Verify that a PR or local changes fully implement requirements from a linked GitHub issue. Produces a coverage report with per-requirement status. Use when asked to "ah verify PR 123", "ah verify my changes", "ah check PR #123 coverage", or "ah verify PR #123 against issue #42".
 argument-hint: "PR number or URL (e.g., 123, #456, https://github.com/owner/repo/pull/789), or issue number for local changes (e.g., issue #42)"
 ---
 
