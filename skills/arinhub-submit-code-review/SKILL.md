@@ -153,18 +153,18 @@ After submission, confirm to the user:
 
 If no review was submitted (Step 6), explain that no new issues were found beyond existing review comments.
 
-### 9. Extract PR Coverage
+### 9. Extract Requirements Coverage
 
-Look for a PR Coverage section in the same source used in Step 4:
+Look for a Requirements Coverage section in the same source used in Step 4:
 
 1. **Review file**: If a review file was used, look for a `## Requirements Coverage` section and extract its full content.
 2. **Current chat session**: If no review file was used, look for any Requirements Coverage report or coverage summary produced during the current chat session.
 
-If no PR Coverage is found, skip to the end -- this step is optional.
+If no Requirements Coverage is found, skip to the end -- this step is optional.
 
-### 10. Post PR Coverage Comment
+### 10. Post Requirements Coverage Comment
 
-**This step runs only if PR Coverage was found in Step 9. It must be the very last action -- execute it after all other steps (including the review submission and result report) are complete.**
+**This step runs only if Requirements Coverage was found in Step 9. It must be the very last action -- execute it after all other steps (including the review submission and result report) are complete.**
 
 Post the coverage report as a standalone PR comment:
 
@@ -175,7 +175,7 @@ EOF
 )"
 ```
 
-- Use the PR Coverage content exactly as found -- do not modify, summarize, or reformat it
+- Use the Requirements Coverage content exactly as found -- do not modify, summarize, or reformat it
 - This comment is independent of the review; post it even if no review was submitted in Step 6
 - This must be the very last API call in the entire procedure to ensure the coverage comment appears at the bottom of the PR conversation
 
