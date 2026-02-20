@@ -104,7 +104,7 @@ Determine the related issue using these methods in priority order:
 
 **Method A -- User-provided issue number:** If the user explicitly provided an issue number (e.g., "verify my changes against issue #42"), use that directly.
 
-**Method B -- Branch name convention:** Extract an issue number from the branch name if it follows a convention like `feature/42-description`, `fix/42`, or `issue-42-description`.
+**Method B -- Branch name convention:** Extract an issue number from the branch name if it follows a convention like `feature/42-description`, `fix/42`, `issue-42-description`, `42-description`, `jj/42-description`, etc.
 
 **No issue found:** If no linked issue can be determined, inform the user and stop. Do not guess or fabricate an issue number.
 
