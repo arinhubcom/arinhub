@@ -14,6 +14,7 @@ Submit a structured code review with line-specific comments to a GitHub pull req
   - Number: `123`
   - Hash-prefixed: `#123`
   - Full URL: `https://github.com/owner/repo/pull/123`
+- **Review file path** (optional): Path to a review file produced by `arinhub-code-reviewer` (e.g., `~/.agents/arinhub/code-reviews/pr-code-review-my-app-123.md`). If provided, issues are extracted from this file instead of the current chat session.
 
 ## Procedure
 
@@ -81,7 +82,7 @@ Use the GitHub API to submit a review with inline comments:
 
 Preflight validation checklist (run before submission):
 
-- Validate JSON payload before sending (e.g., `jq . review.json >/dev/null`)
+- Validate JSON payload before sending (e.g., pipe the heredoc through `jq . >/dev/null` to check syntax)
 - Ensure each comment has valid `path`, `line`, and `side: "RIGHT"`
 - For multi-line comments, include `start_line` and `start_side: "RIGHT"` together with `line`
 - Confirm `line` (and `start_line` for ranges) is inside the PR diff hunk for that file

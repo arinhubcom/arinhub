@@ -40,7 +40,7 @@ PR_NUMBER=<extracted number>
 Determine the current branch name for identification.
 
 ```
-BRANCH_NAME=$(git branch --show-current)
+BRANCH_NAME=$(git branch --show-current | tr '/' '-')
 ```
 
 ### 3. Fetch Metadata

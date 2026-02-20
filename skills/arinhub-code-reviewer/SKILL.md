@@ -1,6 +1,6 @@
 ---
 name: arinhub-code-reviewer
-description: "Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. Use when asked to 'review PR 123', 'review my changes','code review PR #123', 'review local changes'. Input: PR number, URL, or nothing for local changes."
+description: "Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. Use when asked to 'review PR 123', 'review my changes', 'code review PR #123', 'review local changes'. Input: PR number, URL, or nothing for local changes."
 argument-hint: "PR number or URL (e.g., 100, #456, https://github.com/owner/repo/pull/789), or omit for local changes"
 ---
 
@@ -82,7 +82,14 @@ Save the diff to a shared file so subagents can read it. In remote mode, also ch
 **If `MODE=remote`:**
 
 ```bash
-DIFF_FILE=~/.agents/arinhub/diffs/pr-diff-${REPO_NAME}-${PR_NUMBER}.md
+DIFF_FILE=~/.agents/arinhub/diffs/pr-diff-${REPO_NAME}-${PR_NUMBER}.diff
+
+# Save the current branch so we can return to it after the review.
+ORIGINAL_BRANCH=$(git branch --show-current)
+
+# Stash any uncommitted local changes to prevent data loss during checkout.
+git stash --include-untracked -m "arinhub-code-reviewer: auto-stash before PR checkout"
+
 gh pr diff ${PR_NUMBER} > ${DIFF_FILE}
 
 # Check out the PR branch to ensure the working tree reflects the PR code for subagents that require it (e.g., react-doctor).
@@ -92,7 +99,7 @@ gh pr checkout ${PR_NUMBER}
 **If `MODE=local`:**
 
 ```bash
-DIFF_FILE=~/.agents/arinhub/diffs/local-diff-${REPO_NAME}-${BRANCH_NAME}.md
+DIFF_FILE=~/.agents/arinhub/diffs/local-diff-${REPO_NAME}-${BRANCH_NAME}.diff
 git diff HEAD > "${DIFF_FILE}"
 ```
 
@@ -115,7 +122,7 @@ Otherwise set `HAS_REACT=false`.
 
 ### 6. Launch Parallel Review Subagents
 
-Spawn subagents **in parallel** (do not wait for one to finish before starting the next). Each subagent must return ONLY a structured list of issues using the format from the Issue Format Reference section below. No subagent may submit a review — they only return findings.
+Spawn subagents **in parallel** (do not wait for one to finish before starting the next). Subagents A, B, and C must return ONLY a structured list of issues using the format from the Issue Format Reference section below. Subagent D (if launched) must return **both** a structured list of issues **and** the full `react-doctor` diagnostic report (the report is appended separately in Step 9). No subagent may submit a review — they only return findings.
 
 Pass the diff file path (`${DIFF_FILE}`) to each subagent so they can read the diff directly. Inform each subagent that the working tree is already on the correct branch (PR branch in remote mode, current branch in local mode). **No subagent should run `gh pr checkout` or switch branches.**
 
@@ -152,7 +159,7 @@ Spawn a subagent to run `react-doctor` on the working tree. The tool runs via `n
 **If `MODE=remote`:** Inform the subagent that the PR branch is already checked out. Instruct it to review the React code in the current working tree with diff context from `${DIFF_FILE}`.
 **If `MODE=local`:** Inform the subagent that the working tree already contains the local changes. Instruct it to review the React code in the current working tree with diff context from `${DIFF_FILE}`.
 
-Instruct it to diagnose React-specific issues (performance, hooks misuse, component anti-patterns, security) and return only the list of issues found — no review submission.
+Instruct it to diagnose React-specific issues (performance, hooks misuse, component anti-patterns, security) and return **both** the structured list of issues (using the Issue Format Reference) **and** the full `react-doctor` diagnostic report. No review submission.
 
 ### 7. Merge and Deduplicate Issues
 
@@ -236,7 +243,7 @@ Spawn a subagent to verify requirements coverage using the `arinhub-verify-requi
 
 **If `MODE=remote`:** Pass PR `${PR_NUMBER}` and `${DIFF_FILE}` to the subagent. It will use the diff file for analysis and resolve the linked issue automatically.
 
-**If `MODE=local`:** Pass `${DIFF_FILE}` to the subagent. The subagent will analyze the diff against the linked issue.
+**If `MODE=local`:** Pass `${DIFF_FILE}` to the subagent. The subagent will attempt to extract the linked issue number from the branch name (e.g., `feature/42-description`, `fix/42`, `issue-42-description`). If no issue can be determined, the subagent will skip coverage verification and report that no linked issue was found.
 
 Append the returned coverage report to the end of the review file under a new section:
 
@@ -252,7 +259,20 @@ Append the returned coverage report to the end of the review file under a new se
 
 Spawn a subagent to submit the review for PR `${PR_NUMBER}` using the `arinhub-submit-code-review` skill. Pass the review file path (`${REVIEW_FILE}`) so the subagent reads issues from it. The subagent must follow the `arinhub-submit-code-review` procedure for deduplication against existing PR comments before submission.
 
-### 12. Report to User
+### 12. Restore Working Tree (only if `MODE=remote`)
+
+**Skip this step if `MODE=local`.**
+
+Return to the original branch and restore any stashed changes from Step 4:
+
+```bash
+git checkout ${ORIGINAL_BRANCH}
+
+# Restore stashed changes if the stash was created in Step 4.
+git stash list | grep -q "arinhub-code-reviewer: auto-stash" && git stash pop
+```
+
+### 13. Report to User
 
 **If `MODE=remote`:**
 
