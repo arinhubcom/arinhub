@@ -6,7 +6,7 @@ Collection of AI agents, hooks, and skills.
 
 | Skill                                                                                          | Description                                                                                                                        | Use when                                                                                                                                                              |
 | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`arinhub-code-reviewer`](skills/arinhub-code-reviewer/SKILL.md)                               | Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. | `"review PR 123"`, `"review my changes"`, `"code review PR #123"`, `"review local changes"`, or omit input for local changes                                          |
+| [`arinhub-code-reviewer`](skills/arinhub-code-reviewer/SKILL.md)                               | Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. | `"ah review PR 123"`, `"ah review my changes"`, `"ah review pr #123"`, `"ah review local changes"`, or omit input for local changes                                   |
 | [`arinhub-submit-code-review`](skills/arinhub-submit-code-review/SKILL.md)                     | Submit code review from chat session or review file to a GitHub PR.                                                                | `"submit PR #123 review"`, `"submit review to PR 123"`, `"submit code review"`                                                                                        |
 | [`arinhub-verify-requirements-coverage`](skills/arinhub-verify-requirements-coverage/SKILL.md) | Verify that a PR or local changes fully implement the requirements described in a linked GitHub issue.                             | `"verify PR 123"`, `"verify my changes"`, `"check PR #123 coverage"`, `"verify PR #123 against issue #42"`, `"check local changes"`, `"do my changes cover issue 42"` |
 
@@ -17,7 +17,7 @@ Collection of AI agents, hooks, and skills.
 ```sh
 /arinhub-code-reviewer
 # or
-review my changes
+ah review my changes
 ```
 
 #### GitHub Pull Request
@@ -26,7 +26,7 @@ review my changes
 # navigate to the PR repository first
 /arinhub-code-reviewer PR 123
 # or
-review PR 123
+ah review PR 123
 ```
 
 ### `arinhub-code-reviewer` — Required Commands & Skills

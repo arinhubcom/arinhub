@@ -1,6 +1,6 @@
 ---
 name: arinhub-code-reviewer
-description: "Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. Use when asked to 'review PR 123', 'review my changes', 'code review PR #123', 'review local changes'. Input: PR number, URL, or nothing for local changes."
+description: Use this skill to review code with prefix 'ah review'. Use when asked to 'ah review PR 123', 'ah review my changes', 'ah review pr #123', 'ah review local changes'. It supports both local changes (staged or working tree) and remote Pull Requests (by ID or URL). Input: PR number, URL, or nothing for local changes.
 argument-hint: "PR number or URL (e.g., 100, #456, https://github.com/owner/repo/pull/789), or omit for local changes"
 ---
 
