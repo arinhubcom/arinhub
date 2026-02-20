@@ -1,6 +1,6 @@
 ---
 name: arinhub-code-reviewer
-description: "Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. Use when asked to 'review PR 123', 'code review PR #123', 'code review', 'review code changes'. Input: PR number, URL, or nothing for local changes."
+description: "Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. Use when asked to 'review PR 123', 'review my changes','code review PR #123', 'review local changes'. Input: PR number, URL, or nothing for local changes."
 argument-hint: "PR number or URL (e.g., 100, #456, https://github.com/owner/repo/pull/789), or omit for local changes"
 ---
 
