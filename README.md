@@ -56,3 +56,11 @@ npx skills add google-gemini/gemini-cli -y -g -s code-reviewer
 npx skills add bgauryy/octocode-mcp -y -g -s octocode-roast
 npx skills add millionco/react-doctor -y -g -s react-doctor
 ```
+
+To update all installed skills to their latest versions:
+
+```sh
+npx skills update
+```
+
+> **Note:** `pr-review-toolkit` is an official Claude Code plugin. Official plugins have automatic updates enabled by default.
