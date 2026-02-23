@@ -1,6 +1,6 @@
 ---
 name: arinhub-submit-code-review
-description: Submit a completed code review with line-specific comments and suggestions to a GitHub PR. Use when asked to "ah submit PR #123 review", "ah submit review to PR 123", or "ah submit code review".
+description: Submit a completed code review with line-specific comments and suggestions to a GitHub PR. Use when asked to "ah submit code review 123", or "ah submit code review to PR 123".
 argument-hint: "PR number or URL (e.g., 123, #456, https://github.com/owner/repo/pull/789)"
 ---
 

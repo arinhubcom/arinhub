@@ -6,11 +6,11 @@ Collection of AI agents, hooks, and [skills](skills).
 
 [Agent Skills](https://agentskills.io) are reusable agent definitions that can be invoked from any chat session. They are designed to perform specific tasks and can orchestrate other skills and commands as needed.
 
-| Skill                                                                                          | Description                                                                                                                        | Use when                                                                                                                            |
-| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| [`arinhub-code-reviewer`](skills/arinhub-code-reviewer/SKILL.md)                               | Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. | `"ah review PR 123"`, `"ah review my changes"`, `"ah review local changes"`, `"ah review pr #123"`, or omit input for local changes |
-| [`arinhub-submit-code-review`](skills/arinhub-submit-code-review/SKILL.md)                     | Submit code review from chat session or review file to a GitHub PR.                                                                | `"ah submit PR #123 review"`, `"ah submit review to PR 123"`, `"ah submit code review"`                                             |
-| [`arinhub-verify-requirements-coverage`](skills/arinhub-verify-requirements-coverage/SKILL.md) | Verify that a PR or local changes fully implement the requirements described in a linked GitHub issue.                             | `"ah verify PR 123"`, `"ah verify my changes"`, `"ah check PR #123 coverage"`, `"ah verify PR #123 against issue #42"`              |
+| Skill                                                                                          | Description                                                                                                                        | Use when                                                                                                                                        |
+| ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`arinhub-code-reviewer`](skills/arinhub-code-reviewer/SKILL.md)                               | Orchestrate a comprehensive code review by launching parallel review subagents, deduplicating findings, and submitting the review. | `"ah review code"`, `"ah review code 123"`, `"ah review PR 123"`                                                                                |
+| [`arinhub-submit-code-review`](skills/arinhub-submit-code-review/SKILL.md)                     | Submit code review from chat session or review file to a GitHub PR.                                                                | `"ah submit code review 123"`, `"ah submit code review to PR 123"`                                                                              |
+| [`arinhub-verify-requirements-coverage`](skills/arinhub-verify-requirements-coverage/SKILL.md) | Verify that a PR or local changes fully implement the requirements described in a linked GitHub issue.                             | `"ah verify requirements"`, `"ah verify requirements issue 42"`, `"ah verify requirements PR 123"`, `"ah verify requirements PR 123, issue 42"` |
 
 ### How to Use `arinhub-code-reviewer`
 
@@ -19,7 +19,7 @@ Collection of AI agents, hooks, and [skills](skills).
 ```sh
 /arinhub-code-reviewer
 # or
-ah review my changes
+ah review code
 ```
 
 #### GitHub Pull Request
@@ -28,7 +28,7 @@ ah review my changes
 # navigate to the PR repository first
 /arinhub-code-reviewer PR 123
 # or
-ah review PR 123
+ah review code 123
 ```
 
 ### `arinhub-code-reviewer` — Required Commands & Skills
