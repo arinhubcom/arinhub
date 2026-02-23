@@ -72,3 +72,23 @@ npx skills update
 ```
 
 > **Note:** `pr-review-toolkit` is an official Claude Code plugin. Official plugins have automatic updates enabled by default.
+
+### How to Use `arinhub-submit-code-review`
+
+> Automatically called by `arinhub-code-reviewer` when reviewing a remote PR. Can also be used standalone:
+
+```sh
+/arinhub-submit-code-review 123
+# or
+ah submit code review 123
+```
+
+### How to Use `arinhub-verify-requirements-coverage`
+
+> Automatically called by `arinhub-code-reviewer` for both local and remote reviews. Can also be used standalone:
+
+```sh
+/arinhub-verify-requirements-coverage PR 123, issue 42
+# or
+ah verify requirements PR 123, issue 42
+```
