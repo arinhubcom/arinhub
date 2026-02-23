@@ -146,44 +146,30 @@ Otherwise set `HAS_REACT=false`.
 
 ### 6. Launch Parallel Review Subagents
 
-Spawn subagents **in parallel** (do not wait for one to finish before starting the next). Subagents A, B, and C must return ONLY a structured list of issues using the format from the Issue Format Reference section below. Subagent D (if launched) must return **both** a structured list of issues **and** the full `react-doctor` diagnostic report (the report is appended separately in Step 9). No subagent may submit a review — they only return findings.
+Spawn subagents **in parallel** (do not wait for one to finish before starting the next). No subagent may submit a review — they only return findings.
 
-Pass the diff file path (`${DIFF_FILE}`) to each subagent so they can read the diff directly. Inform each subagent that the working tree is already on the correct branch (PR branch in remote mode, current branch in local mode). **No subagent should run `gh pr checkout` or switch branches.**
+Every subagent prompt must include the following shared context:
+
+> The working tree is checked out on the branch that contains the changes under review. A diff file at `${DIFF_FILE}` contains all the changes to review. Do not switch branches, run `gh pr checkout`, or modify the working tree. Return a structured list of issues using the format defined in `references/issue-format.md`. Do not submit any review.
 
 - If `HAS_REACT=true`: spawn **four** subagents (A, B, C, D).
 - If `HAS_REACT=false`: spawn **three** subagents (A, B, C) — skip Subagent D.
 
 #### Subagent A: code-reviewer
 
-**If `MODE=remote`:** Spawn a subagent to review PR `${PR_NUMBER}` using the `code-reviewer` skill. Pass `${DIFF_FILE}` for diff context.
-**If `MODE=local`:** Spawn a subagent to review local changes using the `code-reviewer` skill. Pass `${DIFF_FILE}` for diff context.
-
-Instruct it to return only the list of issues found — no review submission.
+Invoke the `code-reviewer` skill.
 
 #### Subagent B: octocode-roast
 
-Spawn a subagent to invoke the `octocode-roast` skill. Pass `${DIFF_FILE}` so it can read the diff directly.
-
-**If `MODE=remote`:** Instruct it to review the diff in `${DIFF_FILE}` for PR `${PR_NUMBER}`.
-**If `MODE=local`:** Instruct it to review the diff in `${DIFF_FILE}` for local changes.
-
-Instruct it to return only the list of issues found — no review submission.
+Invoke the `octocode-roast` skill with `code review` mode.
 
 #### Subagent C: pr-review-toolkit
 
-**If `MODE=remote`:** Spawn a subagent to review PR `${PR_NUMBER}` using the `pr-review-toolkit:review-pr` command with `all parallel` mode. Pass `${DIFF_FILE}` for diff context.
-**If `MODE=local`:** Spawn a subagent to review local changes using the `pr-review-toolkit:review-pr` command with `all parallel` mode. Pass `${DIFF_FILE}` for diff context.
-
-Instruct it to return only the list of issues found — no review submission.
+Invoke the `pr-review-toolkit:review-pr` command with `all parallel` mode.
 
 #### Subagent D: react-doctor (only if `HAS_REACT=true`)
 
-Spawn a subagent to run `react-doctor` on the working tree. The tool runs via `npx -y react-doctor@latest . --verbose --diff` and requires the working tree to be on the correct branch (already ensured by Step 4).
-
-**If `MODE=remote`:** Inform the subagent that the PR branch is already checked out. Instruct it to review the React code in the current working tree with diff context from `${DIFF_FILE}`.
-**If `MODE=local`:** Inform the subagent that the working tree already contains the local changes. Instruct it to review the React code in the current working tree with diff context from `${DIFF_FILE}`.
-
-Instruct it to diagnose React-specific issues (performance, hooks misuse, component anti-patterns, security) and return **both** the structured list of issues (using the Issue Format Reference) **and** the full `react-doctor` diagnostic report. No review submission.
+Invoke the `react-doctor` skill. Return the full `react-doctor` diagnostic report alongside the structured issues.
 
 ### 7. Merge and Deduplicate Issues
 
@@ -321,27 +307,6 @@ Present the review file (`${REVIEW_FILE}`) content to the user and a summary:
 - Total issues found (by severity)
 - Requirements coverage percentage (if available)
 - Branch name and list of changed files reviewed
-
-## Issue Format Reference
-
-Each issue in a subagent response must follow this structure:
-
-````markdown
-- **Severity:** High Priority | Medium Priority | Low Priority
-  **File:** path/to/file.ts
-  **Line(s):** 42 (or 42-50)
-  **Description:** Clear explanation of the problem.
-  **Code:**
-  ```ts
-  // the problematic code from the PR diff
-  const result = unsafeOperation(input);
-  ```
-  **Suggestion:**
-  ```diff
-  - const result = unsafeOperation(input);
-  + const result = safeOperation(sanitize(input));
-  ```
-````
 
 ## Important Notes
 
