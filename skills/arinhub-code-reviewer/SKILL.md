@@ -6,7 +6,7 @@ argument-hint: "PR number or URL (e.g., 100, #456, https://github.com/owner/repo
 
 # Code Reviewer
 
-Orchestrate a comprehensive code review by running multiple review strategies in parallel, merging and deduplicating findings into a review file. Supports both remote PRs and local uncommitted changes.
+Orchestrate a comprehensive code review by running multiple review strategies in parallel, merging and deduplicating findings into a review file. Supports both remote PRs and local branch changes.
 
 ## Input
 
@@ -25,20 +25,36 @@ Orchestrate a comprehensive code review by running multiple review strategies in
 
 Extract the PR number. Determine the repository name from git remote or the provided URL.
 
-```
+```sh
 PR_NUMBER=<extracted number>
 REPO_NAME=<repository name, e.g. "my-app">
 REVIEW_FILE=~/.agents/arinhub/code-reviews/pr-code-review-${REPO_NAME}-${PR_NUMBER}.md
+
+# Get the PR branch name and base branch from PR metadata (single API call).
+PR_META=$(gh pr view ${PR_NUMBER} --json headRefName,baseRefName)
+PR_BRANCH=$(echo "$PR_META" | jq -r '.headRefName')
+PR_BASE=$(echo "$PR_META" | jq -r '.baseRefName')
 ```
 
 **If `MODE=local`:**
 
-Determine the repository name from git remote. Use the current branch name for identification, sanitizing slashes to dashes so file paths remain valid.
+Determine the repository name from git remote. Use the current branch name for identification, sanitizing slashes to dashes so file paths remain valid. Also determine the base branch and merge base for diffing.
 
-```
+```sh
 REPO_NAME=<repository name>
 BRANCH_NAME=$(git branch --show-current | tr '/' '-')
 REVIEW_FILE=~/.agents/arinhub/code-reviews/local-code-review-${REPO_NAME}-${BRANCH_NAME}.md
+
+# Determine the base (source) branch using this priority:
+# 1. If an open/draft PR exists for the current branch, use its base branch
+#    (handles custom targets like develop, release/*, etc.).
+# 2. Fall back to the repository's default branch.
+# 3. Last resort: "main".
+BASE_BRANCH=$(gh pr view --json baseRefName -q '.baseRefName' 2>/dev/null || gh repo view --json defaultBranchRef -q '.defaultBranchRef.name' 2>/dev/null || git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
+BASE_BRANCH=${BASE_BRANCH:-main}
+
+# Find the point where the current branch diverged from the base branch.
+MERGE_BASE=$(git merge-base "${BASE_BRANCH}" HEAD)
 ```
 
 Create `~/.agents/arinhub/code-reviews/` and `~/.agents/arinhub/diffs/` directories if they do not exist.
@@ -54,6 +70,8 @@ Create the review file with a header:
 
 **Date:** <current date>
 **PR:** <PR URL>
+**Branch:** ${PR_BRANCH}
+**Base:** ${PR_BASE}
 
 ## Issues
 
@@ -69,6 +87,7 @@ Create the review file with a header:
 
 **Date:** <current date>
 **Branch:** ${BRANCH_NAME}
+**Base:** ${BASE_BRANCH} (merge base: ${MERGE_BASE})
 
 ## Issues
 
@@ -98,9 +117,14 @@ gh pr checkout ${PR_NUMBER}
 
 **If `MODE=local`:**
 
+Diff from the merge base (resolved in Step 2) to the current working tree. This captures all changes on the feature branch — both committed and uncommitted — relative to the source branch.
+
 ```bash
 DIFF_FILE=~/.agents/arinhub/diffs/local-diff-${REPO_NAME}-${BRANCH_NAME}.diff
-git diff HEAD > "${DIFF_FILE}"
+
+# Diff from the merge base to the current working tree.
+# BASE_BRANCH and MERGE_BASE were resolved in Step 2.
+git diff "${MERGE_BASE}" > "${DIFF_FILE}"
 ```
 
 No checkout is needed in local mode — the working tree already contains the changes.
