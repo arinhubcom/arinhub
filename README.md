@@ -35,12 +35,12 @@ ah review code 123
 
 The orchestrator launches parallel subagents that depend on external commands and skills:
 
-| Subagent | Skill / Command                                                                                                                      | Required From                              |
-| -------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| A        | [`code-reviewer`](https://github.com/google-gemini/gemini-cli/blob/main/.gemini/skills/code-reviewer/SKILL.md)                       | skill                                      |
-| B        | [`octocode-roast`](https://github.com/bgauryy/octocode-mcp/blob/main/skills/octocode-roast/SKILL.md)                                 | skill                                      |
-| C        | [`pr-review-toolkit:review-pr`](https://github.com/anthropics/claude-code/blob/main/plugins/pr-review-toolkit/commands/review-pr.md) | command                                    |
-| D        | [`react-doctor`](https://github.com/millionco/react-doctor/blob/main/skills/react-doctor/SKILL.md)                                   | skill (only when diff contains React code) |
+| Subagent | Skill / Command | Description |
+| --- | --- | --- |
+| A | [`code-reviewer`](https://github.com/google-gemini/gemini-cli/blob/main/.gemini/skills/code-reviewer/SKILL.md) | Standards-driven reviewer that runs preflight checks, scores findings by confidence (≥80 threshold), and analyzes code against CLAUDE.md guidelines across seven pillars. |
+| B | [`octocode-roast`](https://github.com/bgauryy/octocode-mcp/blob/main/skills/octocode-roast/SKILL.md) | Brutally honest code critic using LSP semantic analysis (call hierarchy, find-refs) to hunt sins ranked by a six-level severity registry from capital offenses to nitpicks. |
+| C | [`pr-review-toolkit:review-pr`](https://github.com/anthropics/claude-code/blob/main/plugins/pr-review-toolkit/commands/review-pr.md) | Multi-specialist toolkit dispatching six focused sub-agents (comment accuracy, test coverage, silent failures, type design, general quality, and code simplification). |
+| D | [`react-doctor`](https://github.com/millionco/react-doctor/blob/main/skills/react-doctor/SKILL.md) | React-specific static analyzer that runs an external CLI on the live working tree, producing a 0–100 health score alongside diagnostics for hooks, performance, and patterns. |
 
 Additionally, after the review phase:
 
