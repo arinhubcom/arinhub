@@ -37,10 +37,20 @@ PR_NUMBER=<extracted number>
 
 **If `MODE=local`:**
 
-Determine the current branch name for identification.
+Determine the current branch name and base branch for identification and diffing.
 
-```
+```bash
 BRANCH_NAME=$(git branch --show-current | tr '/' '-')
+
+# Determine the base (source) branch using this priority:
+# 1. If an open/draft PR exists for the current branch, use its base branch.
+# 2. Fall back to the repository's default branch.
+# 3. Last resort: "main".
+BASE_BRANCH=$(gh pr view --json baseRefName -q '.baseRefName' 2>/dev/null || gh repo view --json defaultBranchRef -q '.defaultBranchRef.name' 2>/dev/null || git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
+BASE_BRANCH=${BASE_BRANCH:-main}
+
+# Find the point where the current branch diverged from the base branch.
+MERGE_BASE=$(git merge-base "${BASE_BRANCH}" HEAD)
 ```
 
 ### 3. Fetch Metadata
@@ -55,10 +65,10 @@ gh pr view $PR_NUMBER --json number,title,body,baseRefName,headRefName,files,url
 
 **If `MODE=local`:**
 
-Gather local change details (staged and unstaged combined):
+Gather the list of changed files on the branch (committed and uncommitted) relative to the base branch:
 
 ```bash
-git diff --name-only HEAD
+git diff --name-only "${MERGE_BASE}"
 ```
 
 ### 4. Extract Linked Issue Number
@@ -159,10 +169,10 @@ Also review the list of changed files from Step 3 to understand the scope of cha
 
 **If `MODE=local`:**
 
-Get the full diff for local changes (both staged and unstaged):
+Diff from the merge base (resolved in Step 2) to the current working tree. This captures all changes on the feature branch — both committed and uncommitted — relative to the base branch.
 
 ```bash
-git diff HEAD
+git diff "${MERGE_BASE}"
 ```
 
 Also review the list of changed files from Step 3 to understand the scope of changes.

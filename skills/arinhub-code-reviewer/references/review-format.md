@@ -39,10 +39,10 @@
   ```
 - Suggestion:
   ```diff
-  - items.forEach(item => {
+  - items.forEach((item) => {
   -   process(item);
   - });
-  + await Promise.all(items.map(item => process(item)));
+  + await Promise.all(items.map((item) => process(item)));
   ```
 
 ### Low Priority

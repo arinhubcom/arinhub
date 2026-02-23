@@ -166,7 +166,7 @@ EOF
 
 ## Important Notes
 
-- Use `APPROVE` when no High Priority issues are found, otherwise use `COMMENT`. Never use `REQUEST_CHANGES` unless the user explicitly asks
+- Use `APPROVE` when no High Priority issues are found, otherwise use `COMMENT`. Never use `REQUEST_CHANGES` unless the user explicitly asks.
 - The `line` field in review comments must reference a line that appears in the diff -- comments on unchanged lines will be rejected by the API
 - For multi-line suggestions, use `start_line` and `line` together to define the range being replaced; both must be within the diff hunk
 - An empty suggestion block (` ```suggestion\n``` `) means "delete these lines"
