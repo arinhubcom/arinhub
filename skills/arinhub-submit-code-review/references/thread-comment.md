@@ -36,11 +36,10 @@ The suggestion content is the **exact code** that will replace the selected line
 
 **Special cases:**
 
-- **Delete lines** -- use an empty suggestion block:
+- **Delete lines** -- use an empty suggestion block (no content between the fences):
 
   ````md
   ```suggestion
-
   ```
   ````
 

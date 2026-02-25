@@ -5,17 +5,17 @@
 
 #### Title of the issue
 
-- Severity: High Priority
-- Source: [source]
-- File: [`path/to/file.ts:42`](/absolute/path/to/file.ts#L42)
-- Line(s): 42 (or 42-50)
-- Description: Clear explanation of the problem.
-- Code:
+- **Severity:** High Priority
+- **Source:** [source]
+- **File:** [`path/to/file.ts:42`](/absolute/path/to/file.ts#L42)
+- **Line(s):** 42 (or 42-50)
+- **Description:** Clear explanation of the problem.
+- **Code:**
   ```ts
   // the problematic code from the PR diff
   const result = unsafeOperation(input);
   ```
-- Suggestion:
+- **Suggestion:**
   ```diff
   - const result = unsafeOperation(input);
   + const result = safeOperation(sanitize(input));
@@ -25,19 +25,19 @@
 
 #### Title of the issue
 
-- Severity: Medium Priority
-- Source: [source]
-- File: [`path/to/file.ts:88-95`](/absolute/path/to/file.ts#L88-L95)
-- Line(s): 88-95
-- Description: Clear explanation of the problem.
-- Code:
+- **Severity:** Medium Priority
+- **Source:** [source]
+- **File:** [`path/to/file.ts:88-95`](/absolute/path/to/file.ts#L88-L95)
+- **Line(s):** 88-95
+- **Description:** Clear explanation of the problem.
+- **Code:**
   ```ts
   // the problematic code from the PR diff
   items.forEach((item) => {
     process(item);
   });
   ```
-- Suggestion:
+- **Suggestion:**
   ```diff
   - items.forEach((item) => {
   -   process(item);
@@ -49,12 +49,12 @@
 
 #### Title of the issue
 
-- Severity: Low Priority
-- Source: [source]
-- File: [`path/to/file.ts:12`](/absolute/path/to/file.ts#L12)
-- Line(s): 12
-- Description: Clear explanation of the problem.
-- Code:
+- **Severity:** Low Priority
+- **Source:** [source]
+- **File:** [`path/to/file.ts:12`](/absolute/path/to/file.ts#L12)
+- **Line(s):** 12
+- **Description:** Clear explanation of the problem.
+- **Code:**
   ```ts
   // the relevant code snippet
   let x = getValue();
