@@ -14,13 +14,7 @@ Each inline thread comment posted on a specific line or line range in the PR dif
 
 ## Assembling the body
 
-For each issue, build the `body` field by combining the `severity`, `title`, `body` (explanation), and optional `suggestion` from Step 4 of the main procedure:
-
-- `<severity>` and `<title>` come from the issue's `severity` and `title` fields
-- `<explanation-why>` comes from the issue's `body` field
-- `<replacement-code>` comes from the issue's `suggestion` field (raw code, no fences)
-
-The ` ```suggestion ``` ` fences are added here — the `suggestion` field contains only raw replacement code, never fences.
+For each issue, build the `body` field by combining the `severity`, `title`, `explanation`, and optional `suggestion` from Step 4 of the main procedure. The ` ```suggestion ``` ` fences are added here — the `suggestion` field contains only raw replacement code, never fences.
 
 ## Format
 
@@ -33,10 +27,10 @@ The suggestion content is the **exact code** that will replace the selected line
 ````md
 **_<severity>_: <title>**
 
-<explanation-why>
+<explanation>
 
 ```suggestion
-<replacement-code>
+<suggestion>
 ```
 ````
 
@@ -57,7 +51,7 @@ The suggestion content is the **exact code** that will replace the selected line
 ```md
 **_<severity>_: <title>**
 
-<explanation-why>
+<explanation>
 ```
 
 ## Examples

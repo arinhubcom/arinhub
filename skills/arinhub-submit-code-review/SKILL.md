@@ -65,7 +65,7 @@ For each issue found, record:
 - `path`: The relative file path
 - `line`: The specific line number in the new version of the file (must be within the diff hunk). For multi-line issues, this is the **last** line of the range.
 - `start_line` (optional): The first line of a multi-line range. Only set when the issue spans more than one line.
-- `body`: A concise, actionable comment explaining the issue (the "why", not just the "what")
+- `explanation`: A concise, actionable comment explaining the issue (the "why", not just the "what")
 - `suggestion` (optional): The **raw replacement code** that should replace the line(s) from `start_line` (or `line`) through `line`. Include this whenever you can propose a concrete fix. The suggestion content is the **exact code** that will replace the selected lines -- do not include ` ```suggestion ` fences here, they are added automatically in Step 7.
 
 #### Parsing a review file
@@ -79,7 +79,7 @@ The review file from `arinhub-code-reviewer` uses a different format than the su
 | `**File:** path/to/file.ts`              | `path`                     | Use the path directly (strip any markdown link syntax or line-number suffix)                                                                                                          |
 | `**Line(s):** 42`                        | `line: 42`                 | Single line: set `line` only                                                                                                                                                          |
 | `**Line(s):** 42-50`                     | `start_line: 42, line: 50` | Range: set `start_line` to the first number, `line` to the second                                                                                                                     |
-| `**Description:** ...`                   | `body`                     | Use as the explanation text                                                                                                                                                           |
+| `**Description:** ...`                   | `explanation`              | Use as the explanation text                                                                                                                                                           |
 | `**Suggestion:** ` ` ```diff ``` ` block | `suggestion`               | **Strip diff markers**: remove lines starting with `-` (deletions), and for lines starting with `+`, remove the `+` prefix and leading space. The result is the raw replacement code. |
 
 **Example diff-to-suggestion transformation:**
@@ -164,7 +164,7 @@ Run before submission:
 - Every comment has `path`, `line`, and `side: "RIGHT"`
 - Multi-line comments additionally have `start_line` and `start_side: "RIGHT"`
 - `line` (and `start_line` for ranges) falls inside the PR diff hunk for that file
-- Each `body` that includes a suggestion contains ` ```suggestion ``` ` fences wrapping the raw replacement code (assembled in "Assembling thread comment body" above)
+- Each `body` that includes a suggestion contains ` ```suggestion ``` ` fences wrapping the raw replacement code
 - Suggestion replacement code preserves indentation and exact intended final content
 - Empty suggestion block (` ```suggestion\n``` `) only when the intent is to delete the selected line(s)
 
@@ -218,32 +218,6 @@ After submission, confirm to the user:
 - Brief list of issues flagged
 
 If no review was submitted (Step 6), explain that no new issues were found beyond existing review comments.
-
-### 9. Extract Requirements Coverage
-
-Look for a Requirements Coverage section in the same source used in Step 4:
-
-1. **Review file**: If a review file was used, look for a `## Requirements Coverage` section and extract its full content (everything from the `## Requirements Coverage` heading to the next `##` heading or end of file).
-2. **Current chat session**: If no review file was used, search the current chat session for output from the `arinhub-verify-requirements-coverage` skill. Specifically, look for a section starting with `## PR Requirements Coverage:` or `## Local Requirements Coverage:` that contains a requirements table and summary.
-
-If no Requirements Coverage is found from either source, skip to the end -- this step is optional.
-
-### 10. Post Requirements Coverage Comment
-
-**This step runs only if Requirements Coverage was found in Step 9. It must be the very last action -- execute it after all other steps (including the review submission and result report) are complete.**
-
-Post the coverage report as a standalone PR comment:
-
-```bash
-gh pr comment $PR_NUMBER --body "$(cat <<'EOF'
-<coverage-content>
-EOF
-)"
-```
-
-- Use the Requirements Coverage content exactly as found -- do not modify, summarize, or reformat it
-- This comment is independent of the review; post it even if no review was submitted in Step 6
-- This must be the very last API call in the entire procedure to ensure the coverage comment appears at the bottom of the PR conversation
 
 ## Important Notes
 

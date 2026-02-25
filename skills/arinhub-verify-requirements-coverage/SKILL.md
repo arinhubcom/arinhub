@@ -209,16 +209,18 @@ Calculate the coverage percentage: `coverage = (fully covered count / total requ
 
 ### 9. Produce Report
 
-Generate one of two outputs based on the analysis.
+Set `TARGET` label based on mode:
+- `MODE=remote`: `PR #<PR_NUMBER>`
+- `MODE=local`: `branch ${BRANCH_NAME}`
+
+Generate the report using the coverage analysis from Step 8.
 
 **If all requirements are covered (100% coverage):**
 
-**`MODE=remote`:**
-
 ```
-## PR Requirements Coverage: 100%
+## Requirements Coverage: 100%
 
-All requirements from issue #<ISSUE_NUMBER> are implemented in PR #<PR_NUMBER>.
+All requirements from issue #<ISSUE_NUMBER> are implemented in <TARGET>.
 
 ### Requirements
 | # | Requirement | Status |
@@ -227,34 +229,15 @@ All requirements from issue #<ISSUE_NUMBER> are implemented in PR #<PR_NUMBER>.
 | R2 | <description> | Covered |
 
 ### Summary
-<2-3 sentences confirming that the PR fully addresses the issue, highlighting key implementation decisions>
-```
-
-**`MODE=local`:**
-
-```
-## Local Requirements Coverage: 100%
-
-All requirements from issue #<ISSUE_NUMBER> are implemented in local changes on branch ${BRANCH_NAME}.
-
-### Requirements
-| # | Requirement | Status |
-|---|-------------|--------|
-| R1 | <description> | Covered |
-| R2 | <description> | Covered |
-
-### Summary
-<2-3 sentences confirming that the local changes fully address the issue, highlighting key implementation decisions>
+<2-3 sentences confirming full coverage, highlighting key implementation decisions>
 ```
 
 **If any requirements are missing or partially covered:**
 
-**`MODE=remote`:**
-
 ```
-## PR Requirements Coverage: <percentage>%
+## Requirements Coverage: <percentage>%
 
-PR #<PR_NUMBER> does not fully implement issue #<ISSUE_NUMBER>.
+<TARGET> does not fully implement issue #<ISSUE_NUMBER>.
 
 ### Requirements
 | # | Requirement | Status | Notes |
@@ -267,47 +250,15 @@ PR #<PR_NUMBER> does not fully implement issue #<ISSUE_NUMBER>.
 <For each uncovered or partially covered requirement, describe specifically what code changes are needed to complete the implementation>
 
 ### Summary
-<2-3 sentences describing the overall gap between the issue requirements and the PR implementation>
-```
-
-**`MODE=local`:**
-
-```
-## Local Requirements Coverage: <percentage>%
-
-Local changes on branch ${BRANCH_NAME} do not fully implement issue #<ISSUE_NUMBER>.
-
-### Requirements
-| # | Requirement | Status | Notes |
-|---|-------------|--------|-------|
-| R1 | <description> | Covered | |
-| R2 | <description> | Not covered | <what is missing> |
-| R3 | <description> | Partially covered | <what is incomplete> |
-
-### Missing Implementation
-<For each uncovered or partially covered requirement, describe specifically what code changes are needed to complete the implementation>
-
-### Summary
-<2-3 sentences describing the overall gap between the issue requirements and the local changes>
+<2-3 sentences describing the overall gap between the issue requirements and the current implementation>
 ```
 
 ### 10. Report to User
 
-**If `MODE=remote`:**
-
 Present the coverage report from Step 9. Include:
 
 - The issue number and title for context
-- The PR URL for reference
-- The coverage percentage
-- Clear next steps if coverage is incomplete
-
-**If `MODE=local`:**
-
-Present the coverage report from Step 9. Include:
-
-- The issue number and title for context
-- The branch name and list of changed files
+- `MODE=remote`: the PR URL for reference; `MODE=local`: the branch name and list of changed files
 - The coverage percentage
 - Clear next steps if coverage is incomplete
 

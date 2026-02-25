@@ -21,11 +21,14 @@ Requirements coverage: **<percentage>%** — <one-line summary referencing the l
 ## Rules
 
 - Always start with the `### Code Review` heading
-- First paragraph: acknowledge what the change does well -- the core fix, the right architectural direction, positive observations
-- Second section: list main concerns as a markdown bullet list under "Main concerns:" or state "No significant concerns." if there are none
-- Last line: requirements coverage percentage and a brief summary. Reference the linked issue as a full markdown link `[#N](https://github.com/owner/repo/issues/N)`. Use `N/A` if no linked issue exists
 - Do not use emojis in the main review comment
 - Keep paragraphs concise -- aim for 1-3 sentences each
+- First paragraph: acknowledge what the change does well -- the core fix, the right architectural direction, positive observations
+- Second section: list main concerns as a markdown bullet list under "Main concerns:" or state "No significant concerns." if there are none
+- Last line: requirements coverage percentage and a brief summary. Reference the linked issue as a full markdown link `[#N](https://github.com/owner/repo/issues/N)`. Use `N/A` if no linked issue exists. Source the coverage data from one of these (in priority order):
+  1. **Review file**: If a review file was used, look for a `## Requirements Coverage` section and extract the percentage and summary from it.
+  2. **Current chat session**: Search for output from the `arinhub-verify-requirements-coverage` skill (sections starting with `## Requirements Coverage:`).
+  3. **No data available**: If neither source contains requirements coverage, use `N/A` for the percentage.
 
 ## Examples
 
