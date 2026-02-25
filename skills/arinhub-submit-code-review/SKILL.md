@@ -184,7 +184,7 @@ gh api repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews \
       "path": "src/auth.ts",
       "line": 42,
       "side": "RIGHT",
-      "body": "<assembled thread-comment body>"
+      "body": "<thread-comment>"
     },
     {
       "path": "src/utils.ts",
@@ -192,7 +192,7 @@ gh api repos/$REPO_OWNER/$REPO_NAME/pulls/$PR_NUMBER/reviews \
       "line": 14,
       "start_side": "RIGHT",
       "side": "RIGHT",
-      "body": "<assembled thread-comment body>"
+      "body": "<thread-comment>"
     }
   ]
 }
