@@ -1,6 +1,6 @@
 ---
 name: arinhub-verify-requirements-coverage
-description: Verify that a PR or local changes fully implement requirements from a linked GitHub issue. Produces a coverage report with per-requirement status. Use when asked to "ah verify requirements", "ah verify requirements issue 42", "ah verify requirements PR 123", or "ah verify requirements PR 123, issue 42".
+description: Use this skill to verify requirements when using the "ah" prefix. Use when asked to "ah verify requirements", "ah verify requirements issue 42", "ah verify requirements PR 123", or "ah verify requirements PR 123, issue 42". Verify that a PR or local changes fully implement requirements from a linked GitHub issue.
 argument-hint: "PR number or URL (e.g., 123, #456, https://github.com/owner/repo/pull/789), or issue number for local changes (e.g., issue #42)"
 ---
 
