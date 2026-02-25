@@ -30,10 +30,12 @@ PR_NUMBER=<extracted number>
 REPO_NAME=<repository name, e.g. "my-app">
 REVIEW_FILE=~/.agents/arinhub/code-reviews/pr-code-review-${REPO_NAME}-${PR_NUMBER}.md
 
-# Get the PR branch name and base branch from PR metadata (single API call).
-PR_META=$(gh pr view ${PR_NUMBER} --json headRefName,baseRefName)
+# Get the PR branch name, base branch, URL, and title from PR metadata (single API call).
+PR_META=$(gh pr view ${PR_NUMBER} --json headRefName,baseRefName,url,title)
 PR_BRANCH=$(echo "$PR_META" | jq -r '.headRefName')
 PR_BASE=$(echo "$PR_META" | jq -r '.baseRefName')
+PR_URL=$(echo "$PR_META" | jq -r '.url')
+PR_TITLE=$(echo "$PR_META" | jq -r '.title')
 ```
 
 **If `MODE=local`:**
@@ -73,7 +75,8 @@ Create the review file with a header:
 **Branch:** ${PR_BRANCH}
 **Base Branch:** ${PR_BASE}
 **PR Number:** ${PR_NUMBER}
-**PR Link:** <PR URL>
+**PR Title:** ${PR_TITLE}
+**PR Link:** ${PR_URL}
 
 ## Issues
 
