@@ -278,15 +278,15 @@ If the API returns an error (e.g., `422 Unprocessable Entity`):
 
 ### 8. Report Result
 
-After submission, present a summary to the user:
+Present a summary of the review submission to the user, including:
 
-- The PR URL for reference
-- Number of review comments submitted vs. total issues found
-- The Issues table (see below)
+1. The PR URL for reference
+2. Number of review comments submitted vs. total issues found
+3. The Issues table below
 
 #### Issues table
 
-Include a markdown table listing **every** issue from Step 4 with its submission status and reason. Use the following format:
+You **MUST** output a markdown table listing **every** issue from Step 4 with its submission status and reason. Never omit this table, even when all issues were skipped. Use the following format:
 
 | #   | Severity        | File                | Line(s) | Title                          | Status         | Reason                            |
 | --- | --------------- | ------------------- | ------- | ------------------------------ | -------------- | --------------------------------- |
