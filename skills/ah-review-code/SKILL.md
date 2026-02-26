@@ -16,19 +16,20 @@ Orchestrate a comprehensive code review by running multiple review strategies in
 
 ### 1. Determine Review Target
 
-- **Remote PR**: If the user provides a PR number or URL (e.g., "Review PR #123"), target that remote PR. Set `MODE=remote`.
+- **Remote PR**: If the user provides a PR number or URL (e.g., "Review PR #123"), target that remote PR. Set `MODE=pr`.
 - **Local Changes**: If no specific PR is mentioned, or if the user asks to "review my changes", target the current local file system changes (staged and unstaged). Set `MODE=local`.
 
 ### 2. Resolve Identifier and Repository
 
-**If `MODE=remote`:**
+**If `MODE=pr`:**
 
 Extract the PR number. Determine the repository name from git remote or the provided URL.
 
 ```sh
+MODE=pr
 PR_NUMBER=<extracted number>
 REPO_NAME=<repository name, e.g. "my-app">
-REVIEW_FILE=~/.agents/arinhub/code-reviews/pr-code-review-${REPO_NAME}-${PR_NUMBER}.md
+REVIEW_FILE=~/.agents/arinhub/code-reviews/${MODE}-code-review-${REPO_NAME}-${PR_NUMBER}.md
 
 # Get the PR branch name, base branch, URL, and title from PR metadata (single API call).
 PR_META=$(gh pr view ${PR_NUMBER} --json headRefName,baseRefName,url,title)
@@ -43,9 +44,10 @@ PR_TITLE=$(echo "$PR_META" | jq -r '.title')
 Determine the repository name from git remote. Use the current branch name for identification, sanitizing slashes to dashes so file paths remain valid. Also determine the base branch and merge base for diffing.
 
 ```sh
+MODE=local
 REPO_NAME=<repository name>
 BRANCH_NAME=$(git branch --show-current | tr '/' '-')
-REVIEW_FILE=~/.agents/arinhub/code-reviews/local-code-review-${REPO_NAME}-${BRANCH_NAME}.md
+REVIEW_FILE=~/.agents/arinhub/code-reviews/${MODE}-code-review-${REPO_NAME}-${BRANCH_NAME}.md
 
 # Determine the base (source) branch using this priority:
 # 1. If an open/draft PR exists for the current branch, use its base branch
@@ -63,7 +65,7 @@ Create `~/.agents/arinhub/code-reviews/` and `~/.agents/arinhub/diffs/` director
 
 ### 3. Initialize Review File
 
-**If `MODE=remote`:**
+**If `MODE=pr`:**
 
 Create the review file with a header:
 
@@ -104,10 +106,10 @@ Create the review file with a header:
 
 Save the diff to a shared file so subagents can read it. In remote mode, also check out the PR branch so tools that require a working tree (e.g., `react-doctor`) operate on the correct code.
 
-**If `MODE=remote`:**
+**If `MODE=pr`:**
 
 ```bash
-DIFF_FILE=~/.agents/arinhub/diffs/pr-diff-${REPO_NAME}-${PR_NUMBER}.diff
+DIFF_FILE=~/.agents/arinhub/diffs/${MODE}-diff-${REPO_NAME}-${PR_NUMBER}.diff
 
 # Save the current branch so we can return to it after the review.
 ORIGINAL_BRANCH=$(git branch --show-current)
@@ -126,7 +128,7 @@ gh pr checkout ${PR_NUMBER}
 Diff from the merge base (resolved in Step 2) to the current working tree. This captures all changes on the feature branch — both committed and uncommitted — relative to the source branch.
 
 ```bash
-DIFF_FILE=~/.agents/arinhub/diffs/local-diff-${REPO_NAME}-${BRANCH_NAME}.diff
+DIFF_FILE=~/.agents/arinhub/diffs/${MODE}-diff-${REPO_NAME}-${BRANCH_NAME}.diff
 
 # Diff from the merge base to the current working tree.
 # BASE_BRANCH and MERGE_BASE were resolved in Step 2.
@@ -209,7 +211,7 @@ Spawn a subagent to execute the `/ah-verify-requirements-coverage` skill. The su
 - **Invoke:** `/ah-verify-requirements-coverage`
 - **CRITICAL:** Do NOT perform requirements verification yourself. Do NOT write verification logic or analyze coverage manually. The skill contains its own methodology — delegate to it completely and return whatever it produces (full requirements coverage report in markdown format).
 
-**If `MODE=remote`:** Pass PR `${PR_NUMBER}` and `${DIFF_FILE}` as arguments to the skill. The skill will use the diff file for analysis and resolve the linked issue automatically.
+**If `MODE=pr`:** Pass PR `${PR_NUMBER}` and `${DIFF_FILE}` as arguments to the skill. The skill will use the diff file for analysis and resolve the linked issue automatically.
 
 **If `MODE=local`:** Pass `${DIFF_FILE}` as an argument to the skill. The skill will attempt to extract the linked issue number from the branch name (e.g., `feature/42-description`, `fix/42`, `issue-42-description`). If no issue can be determined, the skill will skip coverage verification and report that no linked issue was found.
 
@@ -235,7 +237,7 @@ Follow the instructions in [restore-working-tree.md](references/restore-working-
 
 ### 13. Report to User
 
-**If `MODE=remote`:**
+**If `MODE=pr`:**
 
 Present a summary:
 
