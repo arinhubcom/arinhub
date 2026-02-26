@@ -195,7 +195,7 @@ Every subagent prompt must include the following shared context:
 
 > The working tree is checked out on the branch that contains the changes under review. A diff file at `${DIFF_FILE}` contains all the changes to review. Do not switch branches, run `gh pr checkout`, or modify the working tree. Do not submit any review.
 >
-> **Output:** Write your findings to `${SUBAGENT_FILE}` (your dedicated output file). Use the format defined in `references/issue-format.md`.
+> **Output:** Write your findings to `${SUBAGENT_FILE}` (your dedicated output file). Read the file `skills/ah-review-code/references/issue-format.md` and use the format defined there.
 
 **Delegation rule (applies to ALL subagents A–D):** Each subagent's sole job is to invoke its assigned skill and return whatever the skill produces. Do NOT perform the analysis yourself. Do NOT write review logic, diagnostic logic, or generate findings manually. Each skill contains its own methodology — delegate to it completely.
 
