@@ -11,7 +11,7 @@
 If there are **non-diff issues** (issues where `file_in_diff: false`), append this section after the requirements coverage line. Construct file links as full GitHub blob URLs using the PR's head branch so they are reliably clickable: `https://github.com/<owner>/<repo>/blob/<headRefName>/<path>#L<line>`.
 
 ````md
-Important issues outside the diff:
+Additional issues outside the diff:
 
 - <title-1>
 
@@ -72,7 +72,7 @@ The new validation middleware correctly sanitizes request bodies and rejects mal
 
 All requirements from linked issue [#312](https://github.com/acme/app/issues/312) are fully addressed.
 
-Important issues outside the diff:
+Additional issues outside the diff:
 
 - Shared validation helper duplicates logic
 
