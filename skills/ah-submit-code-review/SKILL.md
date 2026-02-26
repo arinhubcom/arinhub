@@ -178,9 +178,8 @@ Submit a single review via the GitHub API. The review consists of one **main rev
 
 #### Determining event type
 
-- Use `"APPROVE"` if **no** issues with severity `High Priority` remain after deduplication.
-- Use `"COMMENT"` if **any** issue has severity `High Priority`.
-- Never use `"REQUEST_CHANGES"` unless the user explicitly asks.
+- Use `"REQUEST_CHANGES"` if **any** issue with severity `High Priority` or `Medium Priority` remains after deduplication.
+- Use `"APPROVE"` if **all** remaining issues are `Low Priority` only.
 
 #### Comment types
 

@@ -1,7 +1,5 @@
 # Main Review Comment Template
 
-The top-level review comment submitted with the `event` field (`APPROVE` or `COMMENT`).
-
 ## Format
 
 ```
