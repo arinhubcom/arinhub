@@ -12,8 +12,10 @@ Collection of AI agents, hooks, and [skills](skills).
 
 [Agent Skills](https://agentskills.io) are reusable agent definitions that can be invoked from any chat session. They are designed to perform specific tasks and can orchestrate other skills and commands as needed.
 
-| Skill                                                                                          | Description                                                                                                                                       | Use when                                                                                                                                        |
-| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+All skills have a unique namespace prefix (`ah-`) to avoid naming conflicts and can be easily invoked using their short names. For example, the `ah-code-reviewer` skill can be invoked with the command `/ah-code-reviewer` or `ah review code`.
+
+| Skill                                                                                | Description                                                                                                                                       | Use when                                                                                                                                        |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`ah-code-reviewer`](skills/ah-code-reviewer/SKILL.md)                               | Orchestrate a comprehensive code review by running multiple review strategies in parallel, merging and deduplicating findings into a review file. | `"ah review code"`, `"ah review code 123"`, `"ah review PR 123"`                                                                                |
 | [`ah-submit-code-review`](skills/ah-submit-code-review/SKILL.md)                     | Submit code review from chat session or review file to a GitHub PR.                                                                               | `"ah submit code review 123"`, `"ah submit code review to PR 123"`                                                                              |
 | [`ah-verify-requirements-coverage`](skills/ah-verify-requirements-coverage/SKILL.md) | Verify that a PR or local changes fully implement the requirements described in a linked GitHub issue.                                            | `"ah verify requirements"`, `"ah verify requirements issue 42"`, `"ah verify requirements PR 123"`, `"ah verify requirements PR 123, issue 42"` |
@@ -50,8 +52,8 @@ The orchestrator launches parallel subagents that depend on external commands an
 
 Additionally, after the review phase:
 
-| Step                | Skill                                                                                          | When                |
-| ------------------- | ---------------------------------------------------------------------------------------------- | ------------------- |
+| Step                | Skill                                                                                | When                |
+| ------------------- | ------------------------------------------------------------------------------------ | ------------------- |
 | Verify requirements | [`ah-verify-requirements-coverage`](skills/ah-verify-requirements-coverage/SKILL.md) | remote PR and local |
 | Submit review       | [`ah-submit-code-review`](skills/ah-submit-code-review/SKILL.md)                     | remote PR only      |
 
