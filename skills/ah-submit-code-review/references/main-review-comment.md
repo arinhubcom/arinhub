@@ -36,7 +36,7 @@ The following issues were found in files not modified by this PR. They cannot be
 <suggestion diff block, if present>
 ```
 
-#### <title-2>
+#### _<severity>_: <title-2>
 
 ...
 

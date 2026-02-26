@@ -129,9 +129,11 @@ Determine the related issue using these methods in priority order:
 **Method B -- Branch name convention:** Extract an issue number from the branch name if it follows a convention like `feature/42-description`, `fix/42`, `issue-42-description`, `42-description`, `jj/42-description`, etc.
 
 ```bash
-# Extract the first number that appears after a slash or dash boundary (or at the start).
+# Extract the first standalone number (2+ digits) that appears after a slash or dash
+# boundary (or at the start), followed by a dash, slash, or end of string.
 # Matches: feature/42-desc, fix/42, issue-42-desc, 42-desc, jj/42-desc
-ISSUE_NUMBER=$(git branch --show-current | grep -oP '(?:^|[/-])(\d+)' | head -1 | grep -oP '\d+')
+# Skips: feature/v2-add-auth (single digit after letter), release/1.0 (version-like)
+ISSUE_NUMBER=$(git branch --show-current | grep -oP '(?:^|[/-])\K\d{2,}(?=[-/]|$)' | head -1)
 ```
 
 **No issue found:** If no linked issue can be determined, inform the user and stop. Do not guess or fabricate an issue number.

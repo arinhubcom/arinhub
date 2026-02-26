@@ -94,7 +94,7 @@ A `**Suggestion:**` section in the review file may contain one or more ` ```diff
 **Convert to `suggestion`** (simple case) -- when the suggestion contains **exactly one** diff block **and** all changed lines (`+`/`-` lines) form a **contiguous group** (no unchanged context lines between separate groups of changes):
 
 1. Remove lines starting with `-` (deletions).
-2. For lines starting with `+`, remove the leading `+` and the single space that follows it.
+2. For lines starting with `+`, remove the leading `+` prefix. If a single space follows the `+`, remove that space as well (it is the diff marker separator, not part of the code). If no space follows the `+` (e.g., an empty added line), remove only the `+`.
 3. The result is the raw replacement code -- store it in `suggestion`.
 
 Example:

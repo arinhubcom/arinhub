@@ -31,7 +31,7 @@ REVIEWS_DIR=~/.agents/arinhub/code-reviews
 MODE=pr
 PR_NUMBER=<extracted from user input>
 REPO_NAME=$(basename -s .git "$(git remote get-url origin)")
-REVIEW_ID=${MODE}-${REPO_NAME}-pr-${PR_NUMBER}
+REVIEW_ID=${MODE}-${REPO_NAME}-${PR_NUMBER}
 REVIEW_FILE=${REVIEWS_DIR}/code-review-${REVIEW_ID}.md
 
 # Get the PR branch name, base branch, URL, and title from PR metadata (single API call).
@@ -70,9 +70,11 @@ Create `~/.agents/arinhub/code-reviews/` and `~/.agents/arinhub/diffs/` director
 ```bash
 BASE_REVIEW_ID=${REVIEW_ID}
 
-if ls "${REVIEWS_DIR}"/code-review-${BASE_REVIEW_ID}.md "${REVIEWS_DIR}"/subagent-*-${BASE_REVIEW_ID}.md 2>/dev/null | head -1 > /dev/null 2>&1; then
+if compgen -G "${REVIEWS_DIR}/code-review-${BASE_REVIEW_ID}.md" > /dev/null 2>&1 || \
+   compgen -G "${REVIEWS_DIR}/subagent-*-${BASE_REVIEW_ID}.md" > /dev/null 2>&1; then
   N=1
-  while ls "${REVIEWS_DIR}"/code-review-${BASE_REVIEW_ID}-${N}.md "${REVIEWS_DIR}"/subagent-*-${BASE_REVIEW_ID}-${N}.md 2>/dev/null | head -1 > /dev/null 2>&1; do
+  while compgen -G "${REVIEWS_DIR}/code-review-${BASE_REVIEW_ID}-${N}.md" > /dev/null 2>&1 || \
+        compgen -G "${REVIEWS_DIR}/subagent-*-${BASE_REVIEW_ID}-${N}.md" > /dev/null 2>&1; do
     N=$((N + 1))
   done
   REVIEW_ID=${BASE_REVIEW_ID}-${N}
@@ -134,7 +136,7 @@ Save the diff to a shared file so subagents can read it. In remote mode, also ch
 **If `MODE=pr`:**
 
 ```bash
-DIFF_FILE=~/.agents/arinhub/diffs/${MODE}-diff-${REPO_NAME}-${PR_NUMBER}.diff
+DIFF_FILE=~/.agents/arinhub/diffs/diff-${REVIEW_ID}.diff
 
 # Save the current branch so we can return to it after the review.
 ORIGINAL_BRANCH=$(git branch --show-current)
@@ -150,10 +152,10 @@ gh pr checkout ${PR_NUMBER}
 
 **If `MODE=local`:**
 
-Diff from the merge base (resolved in Step 2) to the current working tree. This captures all changes on the feature branch — both committed and uncommitted — relative to the source branch.
+Diff from the merge base (resolved in Step 2) to the current working tree. This captures all changes on the feature branch — both committed and uncommitted — relative to the source branch. Note: untracked files (new files not yet `git add`-ed) are not included in the diff.
 
 ```bash
-DIFF_FILE=~/.agents/arinhub/diffs/${MODE}-diff-${REPO_NAME}-${BRANCH_NAME}.diff
+DIFF_FILE=~/.agents/arinhub/diffs/diff-${REVIEW_ID}.diff
 
 # Diff from the merge base to the current working tree.
 # BASE_BRANCH and MERGE_BASE were resolved in Step 2.
@@ -234,6 +236,7 @@ Read all subagent output files (`~/.agents/arinhub/code-reviews/subagent-*-${REV
 3. Two issues are duplicates if they share the same file, overlapping line ranges (within ±5 lines), and address the same concern (use semantic comparison, not exact string matching).
 4. When duplicates are found, keep the most detailed/actionable version.
 5. Tag each kept issue with its source(s): `[code-reviewer]`, `[octocode-roast]`, `[pr-review-toolkit]`, `[react-doctor]`, or combination if multiple agents found it.
+6. Transform each issue's `**File:**` field from the plain path in issue-format into the linked format used in review-format: combine the file path with the `**Line(s):**` value to produce a markdown link — e.g., `**File:** [`path/to/file.ts:42`](/absolute/path/to/file.ts#L42)` for single lines or `**File:** [`path/to/file.ts:42-50`](/absolute/path/to/file.ts#L42-L50)` for ranges.
 
 ### 8. Write Preflight Report
 
