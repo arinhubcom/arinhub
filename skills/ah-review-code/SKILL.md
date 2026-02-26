@@ -21,6 +21,10 @@ Orchestrate a comprehensive code review by running multiple review strategies in
 
 ### 2. Resolve Identifier and Repository
 
+```sh
+REVIEWS_DIR=~/.agents/arinhub/code-reviews
+```
+
 **If `MODE=pr`:**
 
 Extract the PR number. Determine the repository name from git remote or the provided URL.
@@ -28,9 +32,9 @@ Extract the PR number. Determine the repository name from git remote or the prov
 ```sh
 MODE=pr
 PR_NUMBER=<extracted number>
-REPO_NAME=<repository name, e.g. "my-app">
+REPO_NAME=<repository name>
 REVIEW_ID=${MODE}-${REPO_NAME}-pr-${PR_NUMBER}
-REVIEW_FILE=~/.agents/arinhub/code-reviews/code-review-${REVIEW_ID}.md
+REVIEW_FILE=${REVIEWS_DIR}/code-review-${REVIEW_ID}.md
 
 # Get the PR branch name, base branch, URL, and title from PR metadata (single API call).
 PR_META=$(gh pr view ${PR_NUMBER} --json headRefName,baseRefName,url,title)
@@ -49,7 +53,7 @@ MODE=local
 REPO_NAME=<repository name>
 BRANCH_NAME=$(git branch --show-current | tr '/' '-')
 REVIEW_ID=${MODE}-${REPO_NAME}-branch-${BRANCH_NAME}
-REVIEW_FILE=~/.agents/arinhub/code-reviews/code-review-${REVIEW_ID}.md
+REVIEW_FILE=${REVIEWS_DIR}/code-review-${REVIEW_ID}.md
 
 # Determine the base (source) branch using this priority:
 # 1. If an open/draft PR exists for the current branch, use its base branch
@@ -64,6 +68,21 @@ MERGE_BASE=$(git merge-base "${BASE_BRANCH}" HEAD)
 ```
 
 Create `~/.agents/arinhub/code-reviews/` and `~/.agents/arinhub/diffs/` directories if they do not exist.
+
+**Collision avoidance:** Check whether a review file or any subagent files for this `REVIEW_ID` already exist. If so, append a sequential number suffix to produce a unique `REVIEW_ID`.
+
+```bash
+BASE_REVIEW_ID=${REVIEW_ID}
+
+if ls "${REVIEWS_DIR}"/code-review-${BASE_REVIEW_ID}.md "${REVIEWS_DIR}"/subagent-*-${BASE_REVIEW_ID}.md 2>/dev/null | head -1 > /dev/null 2>&1; then
+  N=1
+  while ls "${REVIEWS_DIR}"/code-review-${BASE_REVIEW_ID}-${N}.md "${REVIEWS_DIR}"/subagent-*-${BASE_REVIEW_ID}-${N}.md 2>/dev/null | head -1 > /dev/null 2>&1; do
+    N=$((N + 1))
+  done
+  REVIEW_ID=${BASE_REVIEW_ID}-${N}
+  REVIEW_FILE=${REVIEWS_DIR}/code-review-${REVIEW_ID}.md
+fi
+```
 
 ### 3. Initialize Review File
 
