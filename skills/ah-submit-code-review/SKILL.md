@@ -1,6 +1,6 @@
 ---
 name: ah-submit-code-review
-description: Use this skill to submit code review when using the "ah" prefix. Use when asked to "ah submit code review 123", or "ah submit code review to PR 123". Submit a completed code review with line-specific comments and suggestions to a GitHub PR.
+description: Use this skill to submit code review when using the "ah" prefix. Use when asked to "ah submit code review 123". Submit a completed code review with line-specific comments and suggestions to a GitHub PR.
 argument-hint: "PR number or URL (e.g., 123, #456, https://github.com/owner/repo/pull/789)"
 ---
 
