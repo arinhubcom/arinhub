@@ -208,6 +208,7 @@ Every subagent prompt must include the following shared context:
 
 - **File:** `~/.agents/arinhub/code-reviews/subagent-code-reviewer-${REVIEW_ID}.md`
 - **Invoke:** `/code-reviewer`
+
 #### Subagent B: octocode-roast
 
 - **File:** `~/.agents/arinhub/code-reviews/subagent-octocode-roast-${REVIEW_ID}.md`
@@ -271,6 +272,7 @@ Append the returned coverage report to the end of the review file under a new se
 **Skip this step if `MODE=local`.**
 
 Follow the instructions in [submit-pr-review.md](references/submit-pr-review.md).
+The subagent returns an **Issues Table** — append it to the end of `${REVIEW_FILE}`.
 
 ### 12. Restore Working Tree
 
@@ -289,6 +291,7 @@ Present a summary:
 - PR coverage percentage
 - Whether the review was submitted successfully
 - The PR URL for reference
+- Present the **Issues Table** (returned by the `ah-submit-code-review` subagent in Step 11)
 
 **If `MODE=local`:**
 

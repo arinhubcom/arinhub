@@ -292,9 +292,9 @@ You **MUST** output a markdown table listing **every** issue from Step 4 with it
 | --- | --------------- | ------------------- | ------- | ------------------------------ | -------------- | --------------------------------- |
 | 1   | High Priority   | `src/auth.ts`       | 42      | Unvalidated input              | Submitted      | —                                 |
 | 2   | Medium Priority | `src/utils.ts`      | 10-14   | Missing null check             | Skipped        | Duplicate of existing comment     |
-| 3   | Low Priority    | `src/api.ts`        | 88      | Unused variable                | Skipped        | Line outside diff hunk            |
+| 3   | Medium Priority | `src/api.ts`        | 88      | Unused variable                | Skipped        | Line outside diff hunk            |
 | 4   | Medium Priority | `src/db.ts`         | 22      | SQL injection risk             | Failed         | API error 422 — retry also failed |
-| 5   | Medium Priority | `src/validators.ts` | 15-22   | Shared helper duplicates logic | In review body | File not in diff                  |
+| 5   | Low Priority    | `src/validators.ts` | 15-22   | Shared helper duplicates logic | In review body | File not in diff                  |
 
 **Status values:**
 
@@ -305,6 +305,7 @@ You **MUST** output a markdown table listing **every** issue from Step 4 with it
 - **Failed** — the API rejected the comment and the retry also failed. Reason: include the API error detail
 
 If no review was submitted (Step 6), explain that no new issues were found beyond existing review comments and still show the table with all issues marked as skipped.
+List all issues in descending severity order (High → Medium → Low).
 
 ## Important Notes
 
