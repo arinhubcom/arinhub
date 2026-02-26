@@ -16,7 +16,7 @@ Main concerns:
 Requirements coverage: **<percentage>%** — <one-line summary referencing the linked issue as a markdown link>.
 ```
 
-If there are **non-diff issues** (issues where `file_in_diff: false`), append this section after the requirements coverage line:
+If there are **non-diff issues** (issues where `file_in_diff: false`), append this section after the requirements coverage line. Construct file links as full GitHub blob URLs using the PR's head branch so they are reliably clickable: `https://github.com/<owner>/<repo>/blob/<headRefName>/<path>#L<line>`.
 
 ````
 ---
@@ -28,7 +28,7 @@ The following issues were found in files not modified by this PR. They cannot be
 
 #### _<severity>_: <title-1>
 
-- [<path>:<line>](<path>#L<line>) (or [<path>:<start_line>-<line>](<path>#L<start_line>-L<line>))
+- [`<path>:<line>`](https://github.com/<owner>/<repo>/blob/<headRefName>/<path>#L<line>) (or [`<path>:<start_line>-<line>`](https://github.com/<owner>/<repo>/blob/<headRefName>/<path>#L<start_line>-L<line>))
 
 <explanation>
 
@@ -123,7 +123,7 @@ The following issues were found in files not modified by this PR. They cannot be
 
 #### _Medium Priority_: Shared validation helper duplicates logic
 
-- [src/utils/validators.ts:15-22](src/utils/validators.ts#L15-L22)
+- [`src/utils/validators.ts:15-22`](https://github.com/acme/app/blob/feature/validation/src/utils/validators.ts#L15-L22)
 
 The `validateEmail` helper in this file uses the same flawed regex. Since the new middleware introduces a corrected pattern, this existing helper should be updated to stay consistent and avoid silent validation drift.
 
