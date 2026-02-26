@@ -16,6 +16,34 @@ Main concerns:
 Requirements coverage: **<percentage>%** — <one-line summary referencing the linked issue as a markdown link>.
 ```
 
+If there are **non-diff issues** (issues where `file_in_diff: false`), append this section after the requirements coverage line:
+
+````
+---
+
+<details>
+<summary><strong>Additional issues outside the diff</strong> (<count> issues)</summary>
+
+The following issues were found in files not modified by this PR. They cannot be attached as inline comments but are worth addressing:
+
+#### <title-1>
+
+- **Severity:** <severity>
+- **File:** `<path>`
+- **Line(s):** <line> (or <start_line>-<line>)
+- **Description:** <explanation>
+
+```diff
+<suggestion diff block, if present>
+```
+
+#### <title-2>
+
+...
+
+</details>
+````
+
 ## Rules
 
 - Always start with the `### Code Review` heading
@@ -23,10 +51,11 @@ Requirements coverage: **<percentage>%** — <one-line summary referencing the l
 - Keep paragraphs concise -- aim for 1-3 sentences each
 - First paragraph: acknowledge what the change does well -- the core fix, the right architectural direction, positive observations
 - Second section: list main concerns as a markdown bullet list under "Main concerns:" or state "No significant concerns." if there are none
-- Last line: requirements coverage percentage and a brief summary. Reference the linked issue as a full markdown link `[#N](https://github.com/owner/repo/issues/N)`. Use `N/A` if no linked issue exists. Source the coverage data from one of these (in priority order):
+- Last line (before non-diff section): requirements coverage percentage and a brief summary. Reference the linked issue as a full markdown link `[#N](https://github.com/owner/repo/issues/N)`. Use `N/A` if no linked issue exists. Source the coverage data from one of these (in priority order):
   1. **Review file**: If a review file was used, look for a `## Requirements Coverage` section and extract the percentage and summary from it.
   2. **Current chat session**: Search for output from the `ah-verify-requirements-coverage` skill (sections starting with `## Requirements Coverage:`).
   3. **No data available**: If neither source contains requirements coverage, use `N/A` for the percentage.
+- **Non-diff issues section**: Only include when there are issues with `file_in_diff: false`. Wrap in a `<details>` tag to keep the review body clean. Include the full issue details (severity, file, lines, description, and suggestion diff if present) so the author has all context without needing inline comments.
 
 ## Examples
 
@@ -72,3 +101,38 @@ Main concerns:
 
 Requirements coverage: **75%** — rate limiting for failed attempts (requirement 4 from issue [#89](https://github.com/acme/app/issues/89)) is not yet implemented.
 ```
+
+### Comment (with non-diff issues)
+
+````
+### Code Review
+
+The new validation middleware correctly sanitizes request bodies and rejects malformed payloads with clear error messages.
+
+Main concerns:
+
+- The regex pattern for email validation rejects valid addresses with `+` aliases
+
+Requirements coverage: **100%** — all requirements from linked issue [#312](https://github.com/acme/app/issues/312) are fully addressed.
+
+---
+
+<details>
+<summary><strong>Additional issues outside the diff</strong> (1 issue)</summary>
+
+The following issues were found in files not modified by this PR. They cannot be attached as inline comments but are worth addressing:
+
+#### Shared validation helper duplicates logic
+
+- **Severity:** Medium Priority
+- **File:** `src/utils/validators.ts`
+- **Line(s):** 15-22
+- **Description:** The `validateEmail` helper in this file uses the same flawed regex. Since the new middleware introduces a corrected pattern, this existing helper should be updated to stay consistent and avoid silent validation drift.
+
+```diff
+- const EMAIL_REGEX = /^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
++ const EMAIL_REGEX = /^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+```
+
+</details>
+````

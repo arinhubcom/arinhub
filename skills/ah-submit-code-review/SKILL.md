@@ -63,6 +63,7 @@ For each issue found, record:
 - `severity`: One of `High Priority`, `Medium Priority`, or `Low Priority`
 - `title`: A short descriptive title for the issue (e.g., "Unvalidated user input passed to SQL query")
 - `path`: The relative file path
+- `file_in_diff`: Whether the file appears in the PR diff (`true` or `false`). Issues with `file_in_diff: false` cannot be posted as inline thread comments -- they are included in the main review body instead (see Step 7).
 - `line`: The specific line number in the new version of the file (must be within the diff hunk). For multi-line issues, this is the **last** line of the range.
 - `start_line` (optional): The first line of a multi-line range. Only set when the issue spans more than one line.
 - `explanation`: A concise, actionable comment explaining the issue (the "why", not just the "what")
@@ -78,6 +79,7 @@ The review file from `ah-review-code` uses a different format than the submissio
 | Issue heading (`#### <text>`)            | `title`                    | Use the heading text as the title                                                                                                                                                                                   |
 | `**Source:** ...`                        | _(skip)_                   | Informational only -- not used in submission                                                                                                                                                                        |
 | `**File:** path/to/file.ts`              | `path`                     | Use the path directly. Strip any markdown link syntax (e.g., ``[`path:42`](/abs/path#L42)`` → `path`) and any `:line` or `:line-line` suffix                                                                        |
+| `**File In Diff:** true` or `false`      | `file_in_diff`             | Use the boolean value directly. If the field is missing, default to `true`                                                                                                                                          |
 | `**Line(s):** 42`                        | `line: 42`                 | Single line: set `line` only                                                                                                                                                                                        |
 | `**Line(s):** 42-50`                     | `start_line: 42, line: 50` | Range: set `start_line` to the first number, `line` to the second                                                                                                                                                   |
 | `**Description:** ...`                   | `explanation`              | Use as the explanation text                                                                                                                                                                                         |
@@ -165,21 +167,28 @@ For each issue identified in Step 4, compare against existing comments from Step
 
 ### 6. Decision Gate
 
-- If **no new issues** remain after deduplication: **Do not submit a review.** Inform the user that no new issues were found beyond existing review comments.
-- If **new issues exist**: Proceed to Step 7.
+- If **no new issues** remain after deduplication (neither inline nor non-diff): **Do not submit a review.** Inform the user that no new issues were found beyond existing review comments.
+- If **new issues exist** (inline, non-diff, or both): Proceed to Step 7. A review with only non-diff issues is still submitted -- the issues appear in the main review body even though there are no inline thread comments.
 
 ### 7. Submit the Review
 
 Submit a single review via the GitHub API. The review consists of one **main review comment** with individual **thread comments** that appear as conversation threads anchored to specific lines in the diff.
 
-**Main review comment** (`body`): See [main-review-comment.md](references/main-review-comment.md) for the full template and examples.
+#### Separating inline vs. non-diff issues
 
-**Thread comments** (`comments[].body`): See [thread-comment.md](references/thread-comment.md) for the full template, body assembly instructions, and examples.
+Before building the payload, split the deduplicated issues into two groups:
+
+- **Inline issues** (`file_in_diff: true`): Posted as thread comments anchored to specific lines in the diff.
+- **Non-diff issues** (`file_in_diff: false`): Cannot be posted as thread comments (the API would reject them). Instead, these are appended to the main review body as a dedicated section.
+
+**Main review comment** (`body`): See [main-review-comment.md](references/main-review-comment.md) for the full template and examples. If non-diff issues exist, append the **Non-diff issues section** described in that template.
+
+**Thread comments** (`comments[].body`): Only inline issues are included here. See [thread-comment.md](references/thread-comment.md) for the full template, body assembly instructions, and examples.
 
 #### Determining event type
 
-- Use `"REQUEST_CHANGES"` if **any** issue with severity `High Priority` or `Medium Priority` remains after deduplication.
-- Use `"APPROVE"` if **all** remaining issues are `Low Priority` only.
+- Use `"REQUEST_CHANGES"` if **any** issue (inline or non-diff) with severity `High Priority` or `Medium Priority` remains after deduplication.
+- Use `"APPROVE"` if **all** remaining issues (inline and non-diff) are `Low Priority` only.
 
 #### Comment types
 
@@ -283,10 +292,12 @@ Include a markdown table listing **every** issue from Step 4 with its submission
 | 2 | Medium Priority | `src/utils.ts` | 10-14 | Missing null check | Skipped | Duplicate of existing comment |
 | 3 | Low Priority | `src/api.ts` | 88 | Unused variable | Skipped | Line outside diff hunk |
 | 4 | Medium Priority | `src/db.ts` | 22 | SQL injection risk | Failed | API error 422 — retry also failed |
+| 5 | Medium Priority | `src/validators.ts` | 15-22 | Shared helper duplicates logic | In review body | File not in diff |
 
 **Status values:**
 
-- **Submitted** — comment was successfully posted to the PR. Reason: `—`
+- **Submitted** — comment was successfully posted as an inline thread comment on the PR. Reason: `—`
+- **In review body** — the file is not part of the PR diff (`file_in_diff: false`), so the issue was included in the main review body under the "Additional issues outside the diff" section. Reason: `File not in diff`
 - **Skipped (duplicate)** — removed during deduplication (Step 5). Reason: describe which existing comment covers it
 - **Skipped (no diff line)** — the target line is not within any diff hunk and could not be adjusted. Reason: explain why
 - **Failed** — the API rejected the comment and the retry also failed. Reason: include the API error detail
