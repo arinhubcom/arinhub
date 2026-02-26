@@ -175,9 +175,9 @@ For each issue identified in Step 4, compare against existing comments from Step
 
 Submit a single review via the GitHub API. The review consists of one **main review comment** with individual **thread comments** that appear as conversation threads anchored to specific lines in the diff.
 
-**Main review comment** (`body`): See [main-review-comment.md](references/main-review-comment.md) for the full template and examples.
+**Main review comment** (`body`): You MUST use the Read tool to read `references/main-review-comment.md` before composing the main review body. Follow its template and formatting exactly.
 
-**Thread comments** (`comments[].body`): See [thread-comment.md](references/thread-comment.md) for the full template and examples.
+**Thread comments** (`comments[].body`): You MUST use the Read tool to read `references/thread-comment.md` before composing any thread comment. Follow its template and formatting exactly.
 
 #### Separating inline vs. non-diff issues
 
