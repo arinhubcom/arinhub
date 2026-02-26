@@ -14,16 +14,16 @@ Collection of AI agents, hooks, and [skills](skills).
 
 | Skill                                                                                          | Description                                                                                                                                       | Use when                                                                                                                                        |
 | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`arinhub-code-reviewer`](skills/arinhub-code-reviewer/SKILL.md)                               | Orchestrate a comprehensive code review by running multiple review strategies in parallel, merging and deduplicating findings into a review file. | `"ah review code"`, `"ah review code 123"`, `"ah review PR 123"`                                                                                |
-| [`arinhub-submit-code-review`](skills/arinhub-submit-code-review/SKILL.md)                     | Submit code review from chat session or review file to a GitHub PR.                                                                               | `"ah submit code review 123"`, `"ah submit code review to PR 123"`                                                                              |
-| [`arinhub-verify-requirements-coverage`](skills/arinhub-verify-requirements-coverage/SKILL.md) | Verify that a PR or local changes fully implement the requirements described in a linked GitHub issue.                                            | `"ah verify requirements"`, `"ah verify requirements issue 42"`, `"ah verify requirements PR 123"`, `"ah verify requirements PR 123, issue 42"` |
+| [`ah-code-reviewer`](skills/ah-code-reviewer/SKILL.md)                               | Orchestrate a comprehensive code review by running multiple review strategies in parallel, merging and deduplicating findings into a review file. | `"ah review code"`, `"ah review code 123"`, `"ah review PR 123"`                                                                                |
+| [`ah-submit-code-review`](skills/ah-submit-code-review/SKILL.md)                     | Submit code review from chat session or review file to a GitHub PR.                                                                               | `"ah submit code review 123"`, `"ah submit code review to PR 123"`                                                                              |
+| [`ah-verify-requirements-coverage`](skills/ah-verify-requirements-coverage/SKILL.md) | Verify that a PR or local changes fully implement the requirements described in a linked GitHub issue.                                            | `"ah verify requirements"`, `"ah verify requirements issue 42"`, `"ah verify requirements PR 123"`, `"ah verify requirements PR 123, issue 42"` |
 
-### How to Use `arinhub-code-reviewer`
+### How to Use `ah-code-reviewer`
 
 #### Local Changes
 
 ```sh
-/arinhub-code-reviewer
+/ah-code-reviewer
 # or
 ah review code
 ```
@@ -32,7 +32,7 @@ ah review code
 
 ```sh
 # navigate to the PR repository first
-/arinhub-code-reviewer 123
+/ah-code-reviewer 123
 # or
 ah review code 123
 ```
@@ -52,14 +52,14 @@ Additionally, after the review phase:
 
 | Step                | Skill                                                                                          | When                |
 | ------------------- | ---------------------------------------------------------------------------------------------- | ------------------- |
-| Verify requirements | [`arinhub-verify-requirements-coverage`](skills/arinhub-verify-requirements-coverage/SKILL.md) | remote PR and local |
-| Submit review       | [`arinhub-submit-code-review`](skills/arinhub-submit-code-review/SKILL.md)                     | remote PR only      |
+| Verify requirements | [`ah-verify-requirements-coverage`](skills/ah-verify-requirements-coverage/SKILL.md) | remote PR and local |
+| Submit review       | [`ah-submit-code-review`](skills/ah-submit-code-review/SKILL.md)                     | remote PR only      |
 
 Install all required commands and skills:
 
 ```sh
 claude plugin install pr-review-toolkit
-npx skills add arinhubcom/arinhub -y -g -s arinhub-code-reviewer -s arinhub-submit-code-review -s arinhub-verify-requirements-coverage
+npx skills add arinhubcom/arinhub -y -g -s ah-code-reviewer -s ah-submit-code-review -s ah-verify-requirements-coverage
 npx skills add google-gemini/gemini-cli -y -g -s code-reviewer
 npx skills add bgauryy/octocode-mcp -y -g -s octocode-roast
 npx skills add millionco/react-doctor -y -g -s react-doctor
@@ -73,22 +73,22 @@ npx skills update
 
 > **Note:** `pr-review-toolkit` is an official Claude Code plugin. Official plugins have automatic updates enabled by default.
 
-### How to Use `arinhub-submit-code-review`
+### How to Use `ah-submit-code-review`
 
-> Automatically called by `arinhub-code-reviewer` when reviewing a remote PR. Can also be used standalone:
+> Automatically called by `ah-code-reviewer` when reviewing a remote PR. Can also be used standalone:
 
 ```sh
-/arinhub-submit-code-review 123
+/ah-submit-code-review 123
 # or
 ah submit code review 123
 ```
 
-### How to Use `arinhub-verify-requirements-coverage`
+### How to Use `ah-verify-requirements-coverage`
 
-> Automatically called by `arinhub-code-reviewer` for both local and remote reviews. Can also be used standalone:
+> Automatically called by `ah-code-reviewer` for both local and remote reviews. Can also be used standalone:
 
 ```sh
-/arinhub-verify-requirements-coverage PR 123, issue 42
+/ah-verify-requirements-coverage PR 123, issue 42
 # or
 ah verify requirements PR 123, issue 42
 ```

@@ -1,5 +1,5 @@
 ---
-name: arinhub-code-reviewer
+name: ah-code-reviewer
 description: Use this skill to review code when using the "ah" prefix. Use when asked to "ah review code", "ah review code 123", or "ah review PR 123". Review code for correctness, maintainability, and adherence to project standards. Supports local branch changes and remote Pull Requests (by ID or URL).
 argument-hint: "PR number or URL (e.g., 100, #456, https://github.com/owner/repo/pull/789), or omit for local changes"
 ---
@@ -113,7 +113,7 @@ DIFF_FILE=~/.agents/arinhub/diffs/pr-diff-${REPO_NAME}-${PR_NUMBER}.diff
 ORIGINAL_BRANCH=$(git branch --show-current)
 
 # Stash any uncommitted local changes to prevent data loss during checkout.
-git stash --include-untracked -m "arinhub-code-reviewer: auto-stash before PR checkout"
+git stash --include-untracked -m "ah-code-reviewer: auto-stash before PR checkout"
 
 gh pr diff ${PR_NUMBER} > ${DIFF_FILE}
 
@@ -204,9 +204,9 @@ Follow the instructions in [react-health-report.md](references/react-health-repo
 
 ### 10. Verify Requirements Coverage
 
-Spawn a subagent to execute the `/arinhub-verify-requirements-coverage` skill. The subagent's sole job is to invoke the skill and return its output.
+Spawn a subagent to execute the `/ah-verify-requirements-coverage` skill. The subagent's sole job is to invoke the skill and return its output.
 
-- **Invoke:** `/arinhub-verify-requirements-coverage`
+- **Invoke:** `/ah-verify-requirements-coverage`
 - **CRITICAL:** Do NOT perform requirements verification yourself. Do NOT write verification logic or analyze coverage manually. The skill contains its own methodology — delegate to it completely and return whatever it produces (full requirements coverage report in markdown format).
 
 **If `MODE=remote`:** Pass PR `${PR_NUMBER}` and `${DIFF_FILE}` as arguments to the skill. The skill will use the diff file for analysis and resolve the linked issue automatically.
@@ -218,7 +218,7 @@ Append the returned coverage report to the end of the review file under a new se
 ```markdown
 ## Requirements Coverage
 
-<coverage report content from arinhub-verify-requirements-coverage>
+<coverage report content from ah-verify-requirements-coverage>
 ```
 
 ### 11. Submit PR Review
