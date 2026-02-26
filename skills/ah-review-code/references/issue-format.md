@@ -35,6 +35,7 @@ Each issue must follow this structure:
 
 ````markdown
 - **Severity:** High Priority | Medium Priority | Low Priority
+- **Source:** <agent-name> (e.g., code-reviewer, octocode-roast, pr-review-toolkit, react-doctor)
 - **File:** path/to/file.ts
 - **File In Diff:** true (if the file is part of the diff file) or false (if the file is not part of the diff file)
 - **Line(s):** 42 (or 42-50, or 77, 324-325)

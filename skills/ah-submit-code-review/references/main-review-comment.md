@@ -59,7 +59,7 @@ The following issues were found in files not modified by this PR. They cannot be
 
 ## Examples
 
-### Approve (no High Priority issues)
+### Approve (no High or Medium Priority issues)
 
 ```
 ### Code Review
@@ -71,7 +71,7 @@ No significant concerns.
 Requirements coverage: **100%** — all requirements from linked issue [#245](https://github.com/acme/app/issues/245) are fully addressed.
 ```
 
-### Comment (High Priority issues found)
+### Request Changes (High Priority issues found)
 
 ```
 ### Code Review
@@ -87,7 +87,7 @@ Main concerns:
 Requirements coverage: **100%** — all requirements from linked issue [#1327](https://github.com/acme/app/issues/1327) are fully addressed.
 ```
 
-### Comment (partial requirements coverage)
+### Request Changes (partial requirements coverage)
 
 ```
 ### Code Review
@@ -102,7 +102,7 @@ Main concerns:
 Requirements coverage: **75%** — rate limiting for failed attempts (requirement 4 from issue [#89](https://github.com/acme/app/issues/89)) is not yet implemented.
 ```
 
-### Comment (with non-diff issues)
+### Request Changes (with non-diff issues)
 
 ````
 ### Code Review

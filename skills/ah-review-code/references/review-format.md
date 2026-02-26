@@ -8,6 +8,7 @@
 - **Severity:** High Priority
 - **Source:** [source]
 - **File:** [`path/to/file.ts:42`](/absolute/path/to/file.ts#L42)
+- **File In Diff:** true
 - **Line(s):** 42 (or 42-50)
 - **Description:** Clear explanation of the problem.
 - **Code:**
@@ -28,6 +29,7 @@
 - **Severity:** Medium Priority
 - **Source:** [source]
 - **File:** [`path/to/file.ts:88-95`](/absolute/path/to/file.ts#L88-L95)
+- **File In Diff:** true
 - **Line(s):** 88-95
 - **Description:** Clear explanation of the problem.
 - **Code:**
@@ -52,6 +54,7 @@
 - **Severity:** Low Priority
 - **Source:** [source]
 - **File:** [`path/to/file.ts:12`](/absolute/path/to/file.ts#L12)
+- **File In Diff:** true
 - **Line(s):** 12
 - **Description:** Clear explanation of the problem.
 - **Code:**
