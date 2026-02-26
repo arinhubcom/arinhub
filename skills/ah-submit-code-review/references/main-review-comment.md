@@ -2,7 +2,7 @@
 
 ## Format
 
-```
+```md
 ### Code Review
 
 <paragraph-1: what the core change does correctly, architectural assessment>.
@@ -18,7 +18,7 @@ Requirements coverage: **<percentage>%** — <one-line summary referencing the l
 
 If there are **non-diff issues** (issues where `file_in_diff: false`), append this section after the requirements coverage line. Construct file links as full GitHub blob URLs using the PR's head branch so they are reliably clickable: `https://github.com/<owner>/<repo>/blob/<headRefName>/<path>#L<line>`.
 
-````
+````md
 ---
 
 <details>
@@ -60,7 +60,7 @@ The following issues were found in files not modified by this PR. They cannot be
 
 ### Approve (no High or Medium Priority issues)
 
-```
+```md
 ### Code Review
 
 The new caching layer is well-structured: TTL-based invalidation handles edge cases correctly, and the cache key design avoids collision risks across tenants.
@@ -72,7 +72,7 @@ Requirements coverage: **100%** — all requirements from linked issue [#245](ht
 
 ### Request Changes (High Priority issues found)
 
-```
+```md
 ### Code Review
 
 The core bug fix is correct and well-motivated: adding `!processingError` to `showProgress` guards and clearing `processingError` on new job submission stops the spinner from getting stuck in an error state. Lifting state computation out of `VerbatimsForm` into the page component is the right architectural direction.
@@ -88,7 +88,7 @@ Requirements coverage: **100%** — all requirements from linked issue [#1327](h
 
 ### Request Changes (partial requirements coverage)
 
-```
+```md
 ### Code Review
 
 The authentication middleware correctly validates JWT tokens and handles expiry with proper error responses. The refresh token rotation logic follows security best practices.
@@ -103,7 +103,7 @@ Requirements coverage: **75%** — rate limiting for failed attempts (requiremen
 
 ### Request Changes (with non-diff issues)
 
-````
+````md
 ### Code Review
 
 The new validation middleware correctly sanitizes request bodies and rejects malformed payloads with clear error messages.
