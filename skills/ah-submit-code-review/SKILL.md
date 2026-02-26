@@ -64,7 +64,7 @@ For each issue found, record:
 - `title`: A short descriptive title for the issue (e.g., "Unvalidated user input passed to SQL query")
 - `path`: The relative file path
 - `file_in_diff`: Whether the file appears in the PR diff (`true` or `false`). Issues with `file_in_diff: false` cannot be posted as inline thread comments -- they are included in the main review body instead (see Step 7).
-- `line`: The specific line number in the new version of the file (must be within the diff hunk). For multi-line issues, this is the **last** line of the range.
+- `line`: The specific line number in the new version of the file. For multi-line issues, this is the **last** line of the range.
 - `start_line` (optional): The first line of a multi-line range. Only set when the issue spans more than one line.
 - `explanation`: A concise, actionable comment explaining the issue (the "why", not just the "what")
 - `suggestion` (optional): Raw replacement code for a concrete fix. Only set for simple, contiguous changes (see **Suggestion conversion rules**). When set, this code replaces lines `start_line` (or `line`) through `line` verbatim. Do not include ` ```suggestion ` fences -- they are added automatically in Step 7. For complex suggestions (multiple diff blocks or non-contiguous changes), do **not** set this field; instead append the diff block(s) to `explanation`.
