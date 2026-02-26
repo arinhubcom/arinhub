@@ -72,16 +72,16 @@ For each issue found, record:
 
 The review file from `ah-review-code` uses a different format than the submission API. Apply these transformations when extracting issues:
 
-| Review file field                        | Maps to                    | Transformation                                                                                                                                                                                              |
-| ---------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `**Severity:** High Priority`            | `severity`                 | Use the value directly (`High Priority`, `Medium Priority`, or `Low Priority`)                                                                                                                              |
-| Issue heading (`#### <text>`)            | `title`                    | Use the heading text as the title                                                                                                                                                                           |
-| `**Source:** ...`                         | *(skip)*                   | Informational only -- not used in submission                                                                                                                                                                |
-| `**File:** path/to/file.ts`              | `path`                     | Use the path directly. Strip any markdown link syntax (e.g., `` [`path:42`](/abs/path#L42) `` → `path`) and any `:line` or `:line-line` suffix                                                              |
-| `**Line(s):** 42`                        | `line: 42`                 | Single line: set `line` only                                                                                                                                                                                |
-| `**Line(s):** 42-50`                     | `start_line: 42, line: 50` | Range: set `start_line` to the first number, `line` to the second                                                                                                                                           |
-| `**Description:** ...`                   | `explanation`              | Use as the explanation text                                                                                                                                                                                 |
-| `**Code:** ` ` ```...``` ` block         | *(skip)*                   | Informational only -- not used in submission                                                                                                                                                                |
+| Review file field                        | Maps to                    | Transformation                                                                                                                                                                                                      |
+| ---------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `**Severity:** High Priority`            | `severity`                 | Use the value directly (`High Priority`, `Medium Priority`, or `Low Priority`)                                                                                                                                      |
+| Issue heading (`#### <text>`)            | `title`                    | Use the heading text as the title                                                                                                                                                                                   |
+| `**Source:** ...`                        | _(skip)_                   | Informational only -- not used in submission                                                                                                                                                                        |
+| `**File:** path/to/file.ts`              | `path`                     | Use the path directly. Strip any markdown link syntax (e.g., ``[`path:42`](/abs/path#L42)`` → `path`) and any `:line` or `:line-line` suffix                                                                        |
+| `**Line(s):** 42`                        | `line: 42`                 | Single line: set `line` only                                                                                                                                                                                        |
+| `**Line(s):** 42-50`                     | `start_line: 42, line: 50` | Range: set `start_line` to the first number, `line` to the second                                                                                                                                                   |
+| `**Description:** ...`                   | `explanation`              | Use as the explanation text                                                                                                                                                                                         |
+| `**Code:** ` ` ```...``` ` block         | _(skip)_                   | Informational only -- not used in submission                                                                                                                                                                        |
 | `**Suggestion:** ` ` ```diff ``` ` block | `suggestion`               | **Strip diff markers**: remove lines starting with `-` (deletions), and for lines starting with `+`, remove the leading `+` character and the single space that follows it. The result is the raw replacement code. |
 
 **Example diff-to-suggestion transformation:**
@@ -213,13 +213,30 @@ If the API returns an error (e.g., `422 Unprocessable Entity`):
 
 ### 8. Report Result
 
-After submission, confirm to the user:
+After submission, present a summary to the user:
 
-- Number of review comments submitted (and any that were dropped due to errors)
 - The PR URL for reference
-- Brief list of issues flagged
+- Number of review comments submitted vs. total issues found
 
-If no review was submitted (Step 6), explain that no new issues were found beyond existing review comments.
+#### Issues table
+
+Include a markdown table listing **every** issue from Step 4 with its submission status and reason. Use the following format:
+
+| # | Severity | File | Line(s) | Title | Status | Reason |
+|---|----------|------|---------|-------|--------|--------|
+| 1 | High Priority | `src/auth.ts` | 42 | Unvalidated input | Submitted | — |
+| 2 | Medium Priority | `src/utils.ts` | 10-14 | Missing null check | Skipped | Duplicate of existing comment |
+| 3 | Low Priority | `src/api.ts` | 88 | Unused variable | Skipped | Line outside diff hunk |
+| 4 | Medium Priority | `src/db.ts` | 22 | SQL injection risk | Failed | API error 422 — retry also failed |
+
+**Status values:**
+
+- **Submitted** — comment was successfully posted to the PR. Reason: `—`
+- **Skipped (duplicate)** — removed during deduplication (Step 5). Reason: describe which existing comment covers it
+- **Skipped (no diff line)** — the target line is not within any diff hunk and could not be adjusted. Reason: explain why
+- **Failed** — the API rejected the comment and the retry also failed. Reason: include the API error detail
+
+If no review was submitted (Step 6), explain that no new issues were found beyond existing review comments and still show the table with all issues marked as skipped.
 
 ## Important Notes
 
