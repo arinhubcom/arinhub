@@ -197,7 +197,7 @@ Submit a single review via the GitHub API. The review consists of one **main rev
 Before building the payload, split the deduplicated issues into two groups:
 
 - **Inline issues** (`file_in_diff: true`): Posted as thread comments anchored to specific lines in the diff.
-- **Non-diff issues** (`file_in_diff: false`): Cannot be posted as thread comments (the API would reject them). Instead, these are appended to the main review body as a dedicated section.
+- **Non-diff issues** (`file_in_diff: false`): Cannot be posted as thread comments (the API would reject them). Instead, these are appended to the main review body as a dedicated section. **However**, only include a non-diff issue if it is directly relevant to the PR body context (e.g., the change described in the PR description or the files/features the PR touches) **or** the requirements coverage context (e.g., a requirement from the linked issue that the PR should address). If a non-diff issue falls outside both of these contexts, **drop it** — do not include it in the review body. The issues table in Step 9 will still list all non-diff issues, but the "Reason" column will explain why any non-diff issue was excluded from the review body.
 
 #### Determining event type
 
