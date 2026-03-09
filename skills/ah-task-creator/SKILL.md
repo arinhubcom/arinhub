@@ -10,7 +10,9 @@ Orchestrate the full Spec Kit pipeline to transform a `prd.md` file into a well-
 
 ## Input
 
-- **prd.md path** (required): Path to the PRD file that describes the feature. If omitted, look for `prd.md` in the current spec folder (`specs/<branch-name>/`).
+- **prd.md path** (required): Path to the PRD file that describes the feature. If not provided by the user, ask before proceeding.
+- **base branch** (required): The branch to merge into (e.g., `main`, `develop`). If not provided by the user, ask before proceeding.
+- **issue number** (required): The GitHub issue number this feature relates to (e.g., `42`). If not provided by the user, ask before proceeding.
 
 ## Configuration
 
@@ -29,7 +31,9 @@ SPEC_DIR="specs/${BRANCH_NAME}"
 PROGRESS_FILE="${SPEC_DIR}/progress.md"
 ```
 
-Verify that `prd.md` exists at the provided path (or at `${SPEC_DIR}/prd.md`). If not found, ask the user for the correct path.
+If the user did not provide **prd.md path**, **base branch**, or **issue number**, ask them for all missing values now (before any other work begins). Store these values as `PRD_PATH`, `BASE_BRANCH`, and `ISSUE_NUMBER`.
+
+Verify that `prd.md` exists at `PRD_PATH`. If the file does not exist, ask the user for the correct path.
 
 Create `${SPEC_DIR}/` if it does not exist.
 
@@ -101,8 +105,12 @@ Read `prd.md` and distill it into a prompt for the `/speckit.specify` command. T
 Spawn subagent **specifier** (Opus, ultrathink):
 
 - Run `/speckit.specify` with the distilled prompt
-- The generated `spec.md` must include an `input` parameter at the top containing the prompt that was passed to the command
-- Save output to `${SPEC_DIR}/`
+- After the file is generated, prepend the following metadata block at the very top of `spec.md` (before any existing content):
+  ```
+  **Base Branch**: <BASE_BRANCH>
+  **Issue Number**: <ISSUE_NUMBER>
+  **Input**: <the distilled prompt>
+  ```
 - Update `progress.md` Specifier section (status: completed, findings)
 
 ### 2. Commit
