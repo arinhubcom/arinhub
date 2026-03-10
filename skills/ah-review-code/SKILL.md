@@ -11,6 +11,7 @@ Orchestrate a comprehensive code review by running multiple review strategies in
 ## Input
 
 - **PR number or URL** (optional): Accepts `123`, `#123`, or full URL. If omitted, reviews local changes.
+- **Base branch** (required for local mode): The branch to diff against (e.g., `main`, `develop`). If the user does not provide a base branch when reviewing local changes, prompt them for it before proceeding.
 
 ## Procedure
 
@@ -44,6 +45,8 @@ PR_TITLE=$(echo "$PR_META" | jq -r '.title')
 
 **If `MODE=local`:**
 
+**Before proceeding:** If the user did not provide a base branch, prompt them with: "Which base branch should I diff against? (e.g., `main`, `develop`)" and wait for their response. Do not auto-detect or fall back to a default.
+
 ```sh
 MODE=local
 REPO_NAME=$(basename -s .git "$(git remote get-url origin)")
@@ -51,13 +54,8 @@ BRANCH_NAME=$(git branch --show-current | tr '/' '-')
 REVIEW_ID=${MODE}-${REPO_NAME}-branch-${BRANCH_NAME}
 REVIEW_FILE=${REVIEWS_DIR}/code-review-${REVIEW_ID}.md
 
-# Determine the base (source) branch using this priority:
-# 1. If an open/draft PR exists for the current branch, use its base branch
-#    (handles custom targets like develop, release/*, etc.).
-# 2. Fall back to the repository's default branch.
-# 3. Last resort: "main".
-BASE_BRANCH=$(gh pr view --json baseRefName -q '.baseRefName' 2>/dev/null || gh repo view --json defaultBranchRef -q '.defaultBranchRef.name' 2>/dev/null || git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's|refs/remotes/origin/||')
-BASE_BRANCH=${BASE_BRANCH:-main}
+# BASE_BRANCH is provided by the user (required).
+BASE_BRANCH=<user-provided base branch>
 
 # Find the point where the current branch diverged from the base branch.
 MERGE_BASE=$(git merge-base "${BASE_BRANCH}" HEAD)
