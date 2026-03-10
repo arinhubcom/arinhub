@@ -19,6 +19,7 @@ All skills have a unique namespace prefix (`ah-`) to avoid naming conflicts and 
 | [`ah-review-code`](skills/ah-review-code/SKILL.md)                                   | Orchestrate a comprehensive code review by running multiple review strategies in parallel, merging and deduplicating findings into a review file. | `"ah review code"`, `"ah review code 123"`                                                                                                                                          |
 | [`ah-submit-code-review`](skills/ah-submit-code-review/SKILL.md)                     | Submit code review from chat session or review file to a GitHub PR.                                                                               | `"ah submit code review 123"`                                                                                                                                                       |
 | [`ah-verify-requirements-coverage`](skills/ah-verify-requirements-coverage/SKILL.md) | Verify that a PR or local changes fully implement the requirements described in a linked GitHub issue.                                            | `"ah verify requirements coverage"`, `"ah verify requirements coverage issue 42"`, `"ah verify requirements coverage PR 123"`, `"ah verify requirements coverage PR 123, issue 42"` |
+| [`ah-task-creator`](skills/ah-task-creator/SKILL.md)                                 | Orchestrate the full Spec Kit pipeline to transform a PRD and ADR into a structured tasks.md file with intermediate design artifacts.             | `"ah create tasks"`, `"ah task creator"`                                                                                                                                            |
 
 ### How to Use `ah-review-code`
 
@@ -45,7 +46,7 @@ The orchestrator launches parallel subagents that depend on external commands an
 
 | Subagent | Skill / Command                                                                                                                      | Description                                                                                                                                                                   |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A        | [`code-reviewer`](https://github.com/google-gemini/gemini-cli/blob/main/.gemini/skills/code-reviewer/SKILL.md)                       | Standards-driven reviewer that scores findings by confidence (≥80 threshold) and analyzes code against CLAUDE.md guidelines across seven pillars.     |
+| A        | [`code-reviewer`](https://github.com/google-gemini/gemini-cli/blob/main/.gemini/skills/code-reviewer/SKILL.md)                       | Standards-driven reviewer that scores findings by confidence (≥80 threshold) and analyzes code against CLAUDE.md guidelines across seven pillars.                             |
 | B        | [`octocode-roast`](https://github.com/bgauryy/octocode-mcp/blob/main/skills/octocode-roast/SKILL.md)                                 | Brutally honest code critic using LSP semantic analysis (call hierarchy, find-refs) to hunt sins ranked by a six-level severity registry from capital offenses to nitpicks.   |
 | C        | [`pr-review-toolkit:review-pr`](https://github.com/anthropics/claude-code/blob/main/plugins/pr-review-toolkit/commands/review-pr.md) | Multi-specialist toolkit dispatching six focused sub-agents (comment accuracy, test coverage, silent failures, type design, general quality, and code simplification).        |
 | D        | [`react-doctor`](https://github.com/millionco/react-doctor/blob/main/skills/react-doctor/SKILL.md)                                   | React-specific static analyzer that runs an external CLI on the live working tree, producing a 0–100 health score alongside diagnostics for hooks, performance, and patterns. |
@@ -61,7 +62,7 @@ Install all required commands and skills:
 
 ```sh
 claude plugin install pr-review-toolkit
-npx skills add arinhubcom/arinhub -y -g -s ah-review-code -s ah-submit-code-review -s ah-verify-requirements-coverage
+npx skills add arinhubcom/arinhub -y -g -s ah-review-code -s ah-submit-code-review -s ah-verify-requirements-coverage -s ah-task-creator
 npx skills add google-gemini/gemini-cli -y -g -s code-reviewer
 npx skills add bgauryy/octocode-mcp -y -g -s octocode-roast
 npx skills add millionco/react-doctor -y -g -s react-doctor
@@ -74,6 +75,18 @@ npx skills update
 ```
 
 > **Note:** `pr-review-toolkit` is an official Claude Code plugin. Official plugins have automatic updates enabled by default.
+
+### How to Use `ah-task-creator`
+
+```sh
+/ah-task-creator path/to/prd.md, path/to/adr.md, issue 42
+# or
+ah create tasks path/to/prd.md, path/to/adr.md, issue 42
+```
+
+#### Required Commands & Skills
+
+The orchestrator launches subagents that depend on the [Spec Kit](https://github.com/github/spec-kit) commands.
 
 ### How to Use `ah-submit-code-review`
 

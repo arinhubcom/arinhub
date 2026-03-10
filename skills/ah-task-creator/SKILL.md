@@ -1,6 +1,6 @@
 ---
 name: ah-task-creator
-description: Use this skill to orchestrate the creation of a tasks.md file from a prd.md and adr.md file using the Spec Kit framework. Use when asked to "ah create tasks", "ah task creator", "ah generate tasks from PRD", "create tasks from prd.md", "run speckit workflow", or when converting a PRD into actionable implementation tasks. This skill runs the full Spec Kit pipeline -- specify, clarify, plan, research, complexity check, checklist, and task generation -- with consistency analysis passes, committing after each major step.
+description: Use this skill to orchestrate the creation of a tasks.md file from a prd.md and adr.md file using the Spec Kit framework. Use when asked to "ah create tasks" or "ah task creator". This skill runs the full Spec Kit pipeline -- specify, clarify, plan, research, complexity check, checklist, and task generation -- with consistency analysis passes, committing after each major step.
 argument-hint: "path to prd.md file and adr.md file"
 ---
 
