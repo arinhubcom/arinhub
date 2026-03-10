@@ -25,6 +25,7 @@ Orchestrate the full Spec Kit pipeline to transform a `prd.md` and `adr.md` file
 
 ```bash
 BASE_BRANCH=$(git branch --show-current)
+PROGRESS_TEMPLATE="progress-task-creator.md"
 ```
 
 If the user did not provide **prd.md path**, **adr.md path**, or **issue number**, ask them for all missing values now (before any other work begins). Store these values as `PRD_PATH`, `ADR_PATH`, and `ISSUE_NUMBER`.
@@ -42,16 +43,16 @@ Spawn subagent **specifier** (Opus, ultrathink):
   ```bash
   NEW_BRANCH_NAME=$(git branch --show-current)
   SPEC_DIR="specs/${NEW_BRANCH_NAME}"
-  PROGRESS_FILE="${SPEC_DIR}/progress.md"
+  PROGRESS_FILE="${SPEC_DIR}/${PROGRESS_TEMPLATE}"
   ```
-- Initialize `progress.md` by copying the template from `references/progress.md` into `${SPEC_DIR}/progress.md`. Replace `<NEW_BRANCH_NAME>` with the actual branch name. Every subagent updates its own section in this file after completing its work.
+- Initialize `${PROGRESS_FILE}` using the template `references/${PROGRESS_TEMPLATE}`. Replace all `<PLACEHOLDER>` values with actual values (branch name, base branch, PRD path, ADR path, issue number, timestamp). Every subagent updates its own section in this file after completing its work.
 - After the file is generated, prepend the following metadata block at the very top of `spec.md` (before any existing content):
   ```
   **Base Branch**: <BASE_BRANCH>
   **Issue Number**: <ISSUE_NUMBER>
   **Input**: <the distilled prompt>
   ```
-- Update `progress.md` Specifier section (status: completed, findings)
+- Update `${PROGRESS_FILE}` Specifier section (status: completed, findings)
 
 ### 2. Commit
 
@@ -64,7 +65,7 @@ Spawn subagent **committer** (Sonnet):
 Spawn subagent **spec-verifier** (Opus, ultrathink):
 
 - Prompt: `Act as a Senior Code Reviewer. Analyze spec.md in ${SPEC_DIR} and identify errors, logical gaps, or inconsistencies. If the spec.md references refactoring or existing codebases, perform a comparative analysis to ensure functional parity and identify any missing requirements. Fix all issues you find.`
-- Update `progress.md` Spec Verifier section
+- Update `${PROGRESS_FILE}` Spec Verifier section
 
 ### 4. Commit
 
@@ -78,7 +79,7 @@ Run `/speckit.clarify` yourself (not as a subagent -- this command may require u
 
 If the clarification process asks questions that need user input, **wait for the user to respond** before proceeding. Do not skip or auto-answer clarification questions.
 
-Update `progress.md` Clarifier section.
+Update `${PROGRESS_FILE}` Clarifier section.
 
 ### 6. Commit
 
@@ -95,7 +96,7 @@ Also read AGENTS.md in the repo root to gather active technologies and recent ch
 Spawn subagent **planner** (Opus, ultrathink):
 
 - Run `/speckit.plan` with the concise tech/architecture prompt
-- Update `progress.md` Planner section
+- Update `${PROGRESS_FILE}` Planner section
 
 ### 8. Commit
 
@@ -108,7 +109,7 @@ Spawn subagent **committer** (Sonnet):
 Spawn subagent **researcher** (Opus, ultrathink):
 
 - Prompt: `I want you to go through the implementation plan and implementation details in ${SPEC_DIR}, looking for areas that could benefit from additional research. For those areas that you identify that require further research, update the research document with additional details about the specific versions that we are going to be using in this application and spawn parallel research tasks to clarify any details using research from the web or context7 tool.`
-- Update `progress.md` Researcher section
+- Update `${PROGRESS_FILE}` Researcher section
 
 ### 10. Commit
 
@@ -123,7 +124,7 @@ Spawn subagent **complexity-checker** (Opus, ultrathink):
 - Prompt: `Cross-check the details to see if there are any over-engineered pieces in folder ${SPEC_DIR}.`
 - Present findings to the user and **ask which issues to fix**
 - Wait for user response, then fix the identified issues
-- Update `progress.md` Complexity Checker section
+- Update `${PROGRESS_FILE}` Complexity Checker section
 
 ### 12. Commit
 
@@ -136,14 +137,14 @@ Spawn subagent **committer** (Sonnet):
 Spawn subagent **checklist-generator** (Opus, ultrathink):
 
 - Run `/speckit.checklist` with prompt: `full breadth pre-implementation checklist, exclude the general spec-quality items already covered in requirements.md and focus only on domain-specific requirement gaps`
-- Update `progress.md` Checklist Generator section
+- Update `${PROGRESS_FILE}` Checklist Generator section
 
 ### 14. Check Checklist
 
 Spawn subagent **checklist-checker** (Opus, ultrathink):
 
 - Prompt: `Read the checklist in ${SPEC_DIR}, and check off each item in the checklist if the feature spec meets the criteria. Leave it empty if it does not. Fix all gaps.`
-- Update `progress.md` Checklist Checker section
+- Update `${PROGRESS_FILE}` Checklist Checker section
 
 ### 15. Commit
 
@@ -156,7 +157,7 @@ Spawn subagent **committer** (Sonnet):
 Spawn subagent **tasks-generator** (Opus, ultrathink):
 
 - Run `/speckit.tasks`
-- Update `progress.md` Tasks Generator section
+- Update `${PROGRESS_FILE}` Tasks Generator section
 
 ### 17. Commit
 
@@ -169,7 +170,7 @@ Spawn subagent **committer** (Sonnet):
 Spawn subagent **tasks-analyzer** (Opus, ultrathink):
 
 - Run `/speckit.analyze` with prompt: `if there are any issues fix all`
-- Update `progress.md` Tasks Analyzer (pass 1) section
+- Update `${PROGRESS_FILE}` Tasks Analyzer (pass 1) section
 
 ### 19. Commit
 
@@ -182,7 +183,7 @@ Spawn subagent **committer** (Sonnet):
 Spawn subagent **tasks-analyzer-2** (Opus, ultrathink):
 
 - Run `/speckit.analyze` with prompt: `if there are any issues fix all`
-- Update `progress.md` Tasks Analyzer (pass 2) section
+- Update `${PROGRESS_FILE}` Tasks Analyzer (pass 2) section
 
 ### 21. Commit (Final)
 
@@ -195,7 +196,7 @@ Spawn subagent **committer** (Sonnet):
 Present a summary:
 
 - Path to the generated `tasks.md`
-- Path to `progress.md` with the full audit trail
+- Path to `${PROGRESS_FILE}` with the full audit trail
 - List of all generated artifacts in `${SPEC_DIR}/`
 - Any unresolved issues or warnings from the analysis passes
 - Next steps: the user can now run `/speckit.implement` to begin implementation
@@ -245,7 +246,7 @@ Each arrow includes a `/commit` step (not shown for brevity).
 
 - Every subagent except `committer` runs on Opus with ultrathink effort mode. The `committer` subagent runs on Sonnet.
 - Steps 5 (clarify) and 11 (complexity check) require user interaction -- the workflow pauses and waits for user input before continuing.
-- The `progress.md` file serves as a running audit trail. Each subagent updates its section immediately after finishing, so you can always see what has been done and what remains.
+- The `${PROGRESS_FILE}` file serves as a running audit trail. Each subagent updates its section immediately after finishing, so you can always see what has been done and what remains.
 - All Spec Kit output files are saved to `specs/<NEW_BRANCH_NAME>/`.
-- If any subagent fails, note the failure in `progress.md` and report to the user before continuing. Do not silently skip steps.
+- If any subagent fails, note the failure in `${PROGRESS_FILE}` and report to the user before continuing. Do not silently skip steps.
 - The `/commit` command creates a conventional commit with a descriptive message based on the staged changes. The committer subagent should not do anything else beyond creating the commit.
