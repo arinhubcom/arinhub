@@ -44,67 +44,7 @@ Spawn subagent **specifier** (Opus, ultrathink):
   SPEC_DIR="specs/${NEW_BRANCH_NAME}"
   PROGRESS_FILE="${SPEC_DIR}/progress.md"
   ```
-- Initialize `progress.md` with the structure below. Every subagent updates its own section in this file after completing its work.
-
-  ```markdown
-  # Progress for branch <NEW_BRANCH_NAME>
-
-  ## Specifier
-
-  - status: not started
-  - findings:
-
-  ## Spec Verifier
-
-  - status: not started
-  - findings:
-
-  ## Clarifier
-
-  - status: not started
-  - findings:
-
-  ## Planner
-
-  - status: not started
-  - findings:
-
-  ## Researcher
-
-  - status: not started
-  - findings:
-
-  ## Complexity Checker
-
-  - status: not started
-  - findings:
-
-  ## Checklist Generator
-
-  - status: not started
-  - findings:
-
-  ## Checklist Checker
-
-  - status: not started
-  - findings:
-
-  ## Tasks Generator
-
-  - status: not started
-  - findings:
-
-  ## Tasks Analyzer (pass 1)
-
-  - status: not started
-  - findings:
-
-  ## Tasks Analyzer (pass 2)
-
-  - status: not started
-  - findings:
-  ```
-
+- Initialize `progress.md` by copying the template from `references/progress.md` into `${SPEC_DIR}/progress.md`. Replace `<NEW_BRANCH_NAME>` with the actual branch name. Every subagent updates its own section in this file after completing its work.
 - After the file is generated, prepend the following metadata block at the very top of `spec.md` (before any existing content):
   ```
   **Base Branch**: <BASE_BRANCH>
