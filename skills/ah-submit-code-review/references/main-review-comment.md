@@ -13,17 +13,13 @@ If there are **non-diff issues** (issues where `file_in_diff: false`), append th
 ````md
 Additional issues outside the diff:
 
-- <title-1>
+<explanation>
 
 [`<path>:<line>`](https://github.com/<owner>/<repo>/blob/<headRefName>/<path>#L<line>) (or [`<path>:<start_line>-<line>`](https://github.com/<owner>/<repo>/blob/<headRefName>/<path>#L<start_line>-L<line>))
-
-<explanation>
 
 ```diff
 <suggestion diff block, if present>
 ```
-
-- <title-2>
 
 ...
 ````
@@ -74,11 +70,9 @@ All requirements from linked issue [#312](https://github.com/acme/app/issues/312
 
 Additional issues outside the diff:
 
-- Shared validation helper duplicates logic
+The `validateEmail` helper in this file uses the same flawed regex. Since the new middleware introduces a corrected pattern, this existing helper should be updated to stay consistent and avoid silent validation drift.
 
 [`src/utils/validators.ts:15-22`](https://github.com/acme/app/blob/feature/validation/src/utils/validators.ts#L15-L22)
-
-The `validateEmail` helper in this file uses the same flawed regex. Since the new middleware introduces a corrected pattern, this existing helper should be updated to stay consistent and avoid silent validation drift.
 
 ```diff
 - const EMAIL_REGEX = /^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;

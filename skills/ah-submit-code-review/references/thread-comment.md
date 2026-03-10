@@ -14,7 +14,7 @@ Each inline thread comment posted on a specific line or line range in the PR dif
 
 ## Assembling the body
 
-For each issue, build the `body` field by combining the `severity`, `title`, `explanation`, and optional `suggestion` from Step 4 of the main procedure. The ` ```suggestion ``` ` fences are added here — the `suggestion` field contains only raw replacement code, never fences.
+For each issue, build the `body` field by combining the `severity`, `explanation`, and optional `suggestion` from Step 4 of the main procedure. The ` ```suggestion ``` ` fences are added here — the `suggestion` field contains only raw replacement code, never fences.
 
 ## Format
 
@@ -25,8 +25,6 @@ Use a suggestion block whenever you can propose a concrete fix. GitHub renders i
 The suggestion content is the **exact code** that will replace the selected line(s) from `start_line` (or `line`) through `line` -- preserve indentation and formatting precisely.
 
 ````md
-<title>
-
 <explanation>
 
 ```suggestion
@@ -50,8 +48,6 @@ The suggestion content is the **exact code** that will replace the selected line
 Use a markdown diff block when the suggested change contains multiple diff blocks or non-contiguous edits that cannot be expressed as a single GitHub suggestion. The diff block is appended to the explanation text. The comment will not have an "Apply" button.
 
 ````md
-<title>
-
 <explanation>
 
 ```diff
@@ -62,8 +58,6 @@ Use a markdown diff block when the suggested change contains multiple diff block
 ### Without suggestion (pure observation)
 
 ```md
-<title>
-
 <explanation>
 ```
 
@@ -72,8 +66,6 @@ Use a markdown diff block when the suggested change contains multiple diff block
 ### High Priority -- with suggestion
 
 ````md
-Unvalidated user input passed to SQL query
-
 The `userId` parameter is interpolated directly into the query string, which is vulnerable to SQL injection. Use a parameterized query instead.
 
 ```suggestion
@@ -84,8 +76,6 @@ const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
 ### Medium Priority -- with suggestion
 
 ````md
-Simplify conditional with optional chaining
-
 The nested null checks can be replaced with optional chaining for better readability.
 
 ```suggestion
@@ -96,8 +86,6 @@ const name = user?.profile?.displayName ?? 'Anonymous';
 ### Medium Priority -- with diff block (multiple changes)
 
 ````md
-Missing import and usage update
-
 The `bar` utility is used below but never imported, and the call site should chain through it for proper validation.
 
 ```diff
@@ -114,7 +102,5 @@ The `bar` utility is used below but never imported, and the call site should cha
 ### Low Priority -- without suggestion
 
 ```md
-Consider extracting magic number to a named constant
-
 The timeout value `3000` appears in multiple places. A named constant like `DEFAULT_TIMEOUT_MS` would make the intent clearer and centralize future changes.
 ```
