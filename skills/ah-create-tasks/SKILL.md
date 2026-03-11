@@ -25,7 +25,7 @@ Orchestrate the full Spec Kit pipeline to transform a `prd.md` and `adr.md` file
 
 ```bash
 BASE_BRANCH=$(git branch --show-current)
-REPO_NAME=$(basename "$(git rev-parse --show-toplevel)")
+REPO_NAME=$(basename -s .git "$(git remote get-url origin)")
 PROGRESS_TEMPLATE="progress-tasks.md"
 ```
 

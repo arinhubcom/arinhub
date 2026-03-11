@@ -19,7 +19,7 @@ Orchestrate the full pre-PR finalization workflow for the current branch. This i
 
 ```bash
 BRANCH_NAME=$(git branch --show-current)
-REPO_NAME=$(basename "$(git rev-parse --show-toplevel)")
+REPO_NAME=$(basename -s .git "$(git remote get-url origin)")
 SAFE_BRANCH_NAME=$(echo "${BRANCH_NAME}" | tr '/' '-')
 SPEC_DIR="specs/${BRANCH_NAME}"
 PROGRESS_FILE="~/.agents/arinhub/progresses/progress-pr-${REPO_NAME}-${SAFE_BRANCH_NAME}.md"
