@@ -1,4 +1,4 @@
-# Task Creator Progress
+# Create Tasks Progress
 
 - **Branch**: <NEW_BRANCH_NAME>
 - **Base Branch**: <BASE_BRANCH>
