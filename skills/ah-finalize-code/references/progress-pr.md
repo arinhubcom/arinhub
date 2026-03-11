@@ -1,14 +1,13 @@
-# Create Tasks Progress
+# Finalize Code Progress
 
-- **Branch**: <NEW_BRANCH_NAME>
+- **Branch**: <BRANCH_NAME>
 - **Base Branch**: <BASE_BRANCH>
-- **PRD Path**: <PRD_PATH>
-- **ADR Path**: <ADR_PATH>
 - **Issue Number**: <ISSUE_NUMBER>
+- **Spec Dir**: specs/<BRANCH_NAME>/
 - **Started at**: <TIMESTAMP>
 - **Completed at**: pending
 
-## 1. Specifier
+## 1. Simplifier
 
 - status: not started
 - commit:
@@ -16,7 +15,7 @@
 - duration:
 - findings:
 
-## 2. Spec Verifier
+## 2. Retrospective
 
 - status: not started
 - commit:
@@ -24,16 +23,7 @@
 - duration:
 - findings:
 
-## 3. Clarifier
-
-- status: not started
-- commit:
-- artifacts:
-- duration:
-- user-decisions:
-- findings:
-
-## 4. Planner
+## 3. Test Creator
 
 - status: not started
 - commit:
@@ -41,7 +31,7 @@
 - duration:
 - findings:
 
-## 5. Researcher
+## 4. JSDoc Updater
 
 - status: not started
 - commit:
@@ -49,16 +39,7 @@
 - duration:
 - findings:
 
-## 6. Complexity Checker
-
-- status: not started
-- commit:
-- artifacts:
-- duration:
-- user-decisions:
-- findings:
-
-## 7. Checklist Generator
+## 5. Tests Docs Updater
 
 - status: not started
 - commit:
@@ -66,7 +47,7 @@
 - duration:
 - findings:
 
-## 8. Checklist Checker
+## 6. API Docs Updater
 
 - status: not started
 - commit:
@@ -74,7 +55,7 @@
 - duration:
 - findings:
 
-## 9. Tasks Generator
+## 7. Spec Optimizer
 
 - status: not started
 - commit:
@@ -82,7 +63,7 @@
 - duration:
 - findings:
 
-## 10. Tasks Analyzer (pass 1)
+## 8. Spec Updater
 
 - status: not started
 - commit:
@@ -90,17 +71,24 @@
 - duration:
 - findings:
 
-## 11. Tasks Analyzer (pass 2)
+## 9. Code Reviewer
 
 - status: not started
 - commit:
+- artifacts:
+- duration:
+- findings:
+
+## 10. PR Creator
+
+- status: not started
 - artifacts:
 - duration:
 - findings:
 
 ## Summary
 
-- total steps: 0/11
+- total steps: 0/10
 - status: not started
 - warnings:
 - unresolved issues:
